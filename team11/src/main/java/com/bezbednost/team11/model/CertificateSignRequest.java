@@ -15,10 +15,10 @@ public class CertificateSignRequest {
     private String commonName;
 
     @Column
-    private String surname;
+    private String lastName;
 
     @Column
-    private String givenName;
+    private String firstName;
 
     @Column
     private String organization;
@@ -30,25 +30,36 @@ public class CertificateSignRequest {
     private String country;
 
     @Column
-    private String email;
+    private String locality;
 
     @Column
-    private String uniqueIdentifier;
+    private String email;
+
+    // status generisemo na back-u
+    @Column
+    private int status;
+
+    @Column
+    private String serialNumber;
 
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] fullCertificate;
 
-    public CertificateSignRequest(String commonName, String surname, String givenName, String organization, String organizationUnit, String country, String email, String uniqueIdentifier, byte[] fullCertificate) {
+    public CertificateSignRequest(String commonName, String lastName, String firstName,
+                                  String organization, String organizationUnit, String country, String locality,
+                                  String email, int status, String serialNumber, byte[] fullCertificate) {
         this.commonName = commonName;
-        this.surname = surname;
-        this.givenName = givenName;
+        this.lastName = lastName;
+        this.firstName = firstName;
         this.organization = organization;
         this.organizationUnit = organizationUnit;
         this.country = country;
+        this.locality = locality;
         this.email = email;
-        this.uniqueIdentifier = uniqueIdentifier;
-        //this.fullCertificate = fullCertificate;
+        this.status = status;
+        this.serialNumber = serialNumber;
+        this.fullCertificate = fullCertificate;
     }
 
     public CertificateSignRequest() {
@@ -60,6 +71,14 @@ public class CertificateSignRequest {
 
     public String getCommonName() {
         return commonName;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     public void setCommonName(String commonName) {
@@ -74,20 +93,20 @@ public class CertificateSignRequest {
         this.fullCertificate = fullCertificate;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getGivenName() {
-        return givenName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getOrganization() {
@@ -114,6 +133,14 @@ public class CertificateSignRequest {
         this.country = country;
     }
 
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -122,11 +149,11 @@ public class CertificateSignRequest {
         this.email = email;
     }
 
-    public String getUniqueIdentifier() {
-        return uniqueIdentifier;
+    public int getStatus() {
+        return status;
     }
 
-    public void setUniqueIdentifier(String uniqueIdentifier) {
-        this.uniqueIdentifier = uniqueIdentifier;
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

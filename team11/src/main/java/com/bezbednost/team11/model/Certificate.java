@@ -1,11 +1,25 @@
 package com.bezbednost.team11.model;
 
-import org.springframework.data.annotation.Id;
+import javax.persistence.*;
+import java.math.BigInteger;
+import java.security.Timestamp;
 
 public class Certificate {
 
     @Id
-    @GenerateValue
-    private String Id;
+    private BigInteger serialNumber;
+
+    @Column
+    private String commonName;
+
+    @Column
+    private Timestamp startDate;
+
+    @Column
+    private Timestamp endDate;
+
+    @Column
+    private String certKeyStorePath;
+
 
 }
