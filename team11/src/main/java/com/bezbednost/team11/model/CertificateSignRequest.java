@@ -1,6 +1,11 @@
 package com.bezbednost.team11.model;
 
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
 public class CertificateSignRequest {
     @Id
     @GeneratedValue
