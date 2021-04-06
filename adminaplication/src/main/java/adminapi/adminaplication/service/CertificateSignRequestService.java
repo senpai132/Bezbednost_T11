@@ -8,11 +8,15 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.List;
 
 @Service
@@ -68,8 +72,23 @@ public class CertificateSignRequestService {
                         locality,
                         email,
                         0,
-                        serialNumber
+                        serialNumber,
+                        req
                         ));
+        return null;
+    }
+
+    public PublicKey getPublicKeyFromCSR(Long id) {
+        try {
+            PKCS10CertificationRequest csr = extractCertificationRequest(certificateSignRequestRepository.findById(id).getFullCertificate());
+
+            JcaPKCS10CertificationRequest jcaCertRequest =
+                    new JcaPKCS10CertificationRequest(csr.getEncoded()).setProvider("BC");
+            return jcaCertRequest.getPublicKey();
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
@@ -86,15 +105,15 @@ public class CertificateSignRequestService {
         throw new IOException();
     }
 
-    public void declineRequest(Integer id) {
-        CertificateSignRequest certificateSignRequest = certificateSignRequestRepository.findById(id).orElse(null);
+    public void declineRequest(Long id) {
+        CertificateSignRequest certificateSignRequest = certificateSignRequestRepository.findById(id);
 
         certificateSignRequest.setStatus(3);
         certificateSignRequestRepository.save(certificateSignRequest);
     }
 
-    public CertificateSignRequest acceptRequest(Integer id) {
-        CertificateSignRequest certificateSignRequest = certificateSignRequestRepository.findById(id).orElse(null);
+    public CertificateSignRequest acceptRequest(Long id) {
+        CertificateSignRequest certificateSignRequest = certificateSignRequestRepository.findById(id);
 
         certificateSignRequest.setStatus(2);
         certificateSignRequestRepository.save(certificateSignRequest);
