@@ -47,6 +47,7 @@ public class ApiKeyStore {
             }else {
                 keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 
+
                 X509Certificate rootCert = generateRoot(keyStore);
 
                 certificateService.writeCertificateToFile(keyStore,

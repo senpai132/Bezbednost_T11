@@ -60,22 +60,26 @@ public class CertificateSignRequestService {
         String email = getField(x500Name, BCStyle.E);
         String serialNumber = getField(x500Name, BCStyle.SERIALNUMBER);
         String locality = getField(x500Name, BCStyle.L);
+        
+        CertificateSignRequest csr_pom = new CertificateSignRequest(
+                commonName,
+                lastName,
+                firstName,
+                organization,
+                organizationUnit,
+                country,
+                locality,
+                email,
+                0,
+                serialNumber,
+                req
+        );
 
-        certificateSignRequestRepository.save(
-                new CertificateSignRequest(
-                        commonName,
-                        lastName,
-                        firstName,
-                        organization,
-                        organizationUnit,
-                        country,
-                        locality,
-                        email,
-                        0,
-                        serialNumber,
-                        req
-                        ));
-        return null;
+
+
+        return certificateSignRequestRepository.save(
+                csr_pom);
+
     }
 
     public PublicKey getPublicKeyFromCSR(Long id) {
