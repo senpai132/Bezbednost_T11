@@ -1,0 +1,24 @@
+<div id="all_certificates">
+    <h1>
+        All certificates
+    </h1>
+    <table border="2">
+        <tr>
+            <th>Serial Number</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Subject</th>
+            <th>Issuer</th>
+            <th>Removal</th>
+        </tr>
+        <tr style="height: 15px;"></tr>
+        <tr *ngFor="let certificate of certificates">
+            <td>{{certificate.serialNumber}}</td>
+            <td>{{certificate.startDate}}</td>
+            <td>{{certificate.endDate}}</td>
+            <td>{{certificate.subjectName}}</td>
+            <td>{{certificate.issuerName}}</td>
+            <td><button class="removal-btn" (click)="remove(certificate.serialNumber)">REMOVE</button></td>
+        </tr>
+    </table>
+</div>

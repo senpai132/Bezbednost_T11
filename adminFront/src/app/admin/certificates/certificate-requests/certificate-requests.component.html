@@ -1,0 +1,26 @@
+<div id="all_requests">
+    <h1>
+        All certificate requests
+    </h1>
+    <table border="2">
+        <tr>
+            <th>Common Name</th>
+            <th>Organization</th>
+            <th>Organization Unit</th>
+            <th>Country</th>
+            <th>Email</th>
+            <th>Accept</th>
+            <th>Decline</th>
+        </tr>
+        <tr style="height: 15px;"></tr>
+        <tr *ngFor="let request of requests">
+            <td>{{request.commonName}}</td>
+            <td>{{request.organization}}</td>
+            <td>{{request.organizationUnit}}</td>
+            <td>{{request.country}}</td>
+            <td>{{request.email}}</td>
+            <td><button class="accept-btn" (click)="accept(request.id)">ACCEPT</button></td>
+            <td><button class="decline-btn" (click)="decline(request.id)">DECLINE</button></td>
+        </tr>
+    </table>
+</div>

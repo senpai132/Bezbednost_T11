@@ -45,6 +45,9 @@ export class AddCertificateComponent implements OnInit {
     }).subscribe(res => {
       console.log("New common name: " + res.commonName);
       alert("Certificate request sent");
+    }, err => {
+      console.log(err);
+      alert("Something went wrong!");
     });
   }
 }
