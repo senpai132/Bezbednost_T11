@@ -21,6 +21,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -29,6 +30,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -45,9 +47,36 @@ public class CertificateService {
     private CertificateSignRequestService certificateSignRequestService;
 
     public List<X509Certificate> findAll() {
+
+        KeyStore ks = apiKeyStore.setUpStore();
+        try {
+            List<X509Certificate> certificates = new ArrayList<>();
+            Enumeration<String> aliases = ks.aliases();
+            while (aliases.hasMoreElements()) {
+                certificates.add(readCertificate(aliases.nextElement()));
+            }
+            return certificates;
+        } catch (KeyStoreException e) {
+            System.out.println(e);
+        }
         return null;
     }
 
+    public X509Certificate readCertificate(String alias) {
+        KeyStore ks = apiKeyStore.setUpStore();
+        Certificate cert = null;
+        try {
+            if (ks.isKeyEntry(alias)) {
+                cert = ks.getCertificate(alias);
+            }
+            if (ks.isCertificateEntry(alias)) {
+                cert = ks.getCertificate(alias);
+            }
+        } catch (KeyStoreException e) {
+            throw new ResourceNotFoundException("Certificate doesn't exist");
+        }
+        return (X509Certificate) cert;
+    }
 
     public void removeCertificate(BigInteger serialNumber) {
     }
