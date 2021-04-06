@@ -1,6 +1,9 @@
 package adminapi.adminaplication.config;
 
+import adminapi.adminaplication.model.IssuerData;
+import adminapi.adminaplication.model.SubjectData;
 import adminapi.adminaplication.service.CertificateService;
+import adminapi.adminaplication.service.GeneratorService;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +15,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.cert.Certificate;
 
 @Configuration
 public class ApiKeyStore {
-    /*@Autowired
-    private DigitalCertificateService digitalCertificateService;*/
+    @Autowired
+    private GeneratorService generatorService;
 
     @Autowired
     private CertificateService certificateService;
@@ -35,8 +37,8 @@ public class ApiKeyStore {
     @Value("${application.certificate.directory}")
     private String certDirectory;
 
-    @Bean(name = "setUpPKI")
-    public KeyStore setUpPKI() {
+    @Bean(name = "setUpStore")
+    public KeyStore setUpStore() {
         try {
             KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
             File f = new File(KEYSTORE_FILE_PATH);
@@ -45,12 +47,10 @@ public class ApiKeyStore {
             }else {
                 keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 
-                /*DigitalCertificate root_cert = generateRoot(keyStore);
-                digitalCertificateService.writeCertificateToFile(keyStore,
-                        TemplateTypes.ROOT.toString().toLowerCase(),
-                        CryptConstants.ROOT_ALIAS, certDirectory);
-
-                digitalCertificateService.save(root_cert);*/
+                X509Certificate rootCert = generateRoot(keyStore);
+                certificateService.writeCertificateToFile(keyStore,
+                        "root",
+                        "1", certDirectory);
 
                 keyStore.store(new FileOutputStream(KEYSTORE_FILE_PATH), KEYSTORE_PASSWORD.toCharArray());
             }
@@ -77,38 +77,31 @@ public class ApiKeyStore {
         return certDirectory;
     }
 
-    /*private DigitalCertificate generateRoot(KeyStore keyStore) throws KeyStoreException {
-        KeyPair kp = digitalCertificateService.generateKeyPair();
+    private X509Certificate generateRoot(KeyStore keyStore) throws KeyStoreException {
+        KeyPair kp = generatorService.generateKeyPair();
 
         X500NameBuilder builder = generateName("ROOT");
 
         IssuerData issuerData =
-                digitalCertificateService.generateIssuerData(kp.getPrivate(), builder.build());
-        SubjectData subjectData = digitalCertificateService.generateSubjectData
-                (kp.getPublic(), builder.build(), TemplateTypes.ROOT, CryptConstants.ROOT_ALIAS);
+                generatorService.generateIssuerData(kp.getPrivate(), builder.build());
+        SubjectData subjectData = generatorService.generateSubjectData
+                (kp.getPublic(), builder.build(), "root", "1");
 
-        subjectData.setSerialNumber(CryptConstants.ROOT_ALIAS);
-        X509Certificate certificate = digitalCertificateService.generateCertificate
-                (subjectData, issuerData, TemplateTypes.ROOT);
+        subjectData.setSerialNumber("1");
+        X509Certificate certificate = generatorService.generateCertificate
+                (subjectData, issuerData, "root");
 
-        keyStore.setKeyEntry(CryptConstants.ROOT_ALIAS, kp.getPrivate(),
+        keyStore.setKeyEntry("1", kp.getPrivate(),
                 KEYSTORE_PASSWORD.toCharArray(), new Certificate[]{certificate});
 
-        DigitalCertificate digitalCertificate = new DigitalCertificate(
-                new BigInteger(subjectData.getSerialNumber()));
-        digitalCertificate.setStartDate(new java.sql.Timestamp(subjectData.getStartDate().getTime()));
-        digitalCertificate.setEndDate(new java.sql.Timestamp(subjectData.getEndDate().getTime()));
-        digitalCertificate.setCommonName(TemplateTypes.ROOT.toString());
-        digitalCertificate.setCertKeyStorePath(certDirectory + "/root.crt");
-
-        return digitalCertificate;
-    }*/
+        return (X509Certificate) certificate;
+    }
 
     private X500NameBuilder generateName(String CN){
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, CN);
-        builder.addRDN(BCStyle.O, "MZ-Srbija");
-        builder.addRDN(BCStyle.OU, "Klinicki centar");
+        builder.addRDN(BCStyle.O, "Bolnice-Srbije");
+        builder.addRDN(BCStyle.OU, "COVID Bolnica");
         builder.addRDN(BCStyle.L, "Novi Sad");
         builder.addRDN(BCStyle.C, "RS");
         return builder;

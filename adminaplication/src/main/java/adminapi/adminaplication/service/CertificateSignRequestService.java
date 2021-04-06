@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.*;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class CertificateSignRequestService {
         return pendingRequest;
     }
 
-    private String getCRSX509NameField(X500Name x500Name, ASN1ObjectIdentifier field) throws Exception {
+    private String getField(X500Name x500Name, ASN1ObjectIdentifier field) throws Exception {
         RDN[] rdn = x500Name.getRDNs(field);
 
         if (rdn.length == 0)
@@ -48,15 +47,15 @@ public class CertificateSignRequestService {
 
         X500Name x500Name = csr.getSubject();
 
-        String commonName = getCRSX509NameField(x500Name, BCStyle.CN);
-        String lastName = getCRSX509NameField(x500Name, BCStyle.SURNAME);
-        String firstName = getCRSX509NameField(x500Name, BCStyle.GIVENNAME);
-        String organization = getCRSX509NameField(x500Name, BCStyle.O);
-        String organizationUnit = getCRSX509NameField(x500Name, BCStyle.OU);
-        String country = getCRSX509NameField(x500Name, BCStyle.C);
-        String email = getCRSX509NameField(x500Name, BCStyle.E);
-        String serialNumber = getCRSX509NameField(x500Name, BCStyle.SERIALNUMBER);
-        String locality = getCRSX509NameField(x500Name, BCStyle.L);
+        String commonName = getField(x500Name, BCStyle.CN);
+        String lastName = getField(x500Name, BCStyle.SURNAME);
+        String firstName = getField(x500Name, BCStyle.GIVENNAME);
+        String organization = getField(x500Name, BCStyle.O);
+        String organizationUnit = getField(x500Name, BCStyle.OU);
+        String country = getField(x500Name, BCStyle.C);
+        String email = getField(x500Name, BCStyle.E);
+        String serialNumber = getField(x500Name, BCStyle.SERIALNUMBER);
+        String locality = getField(x500Name, BCStyle.L);
 
         certificateSignRequestRepository.save(
                 new CertificateSignRequest(
@@ -99,6 +98,8 @@ public class CertificateSignRequestService {
 
         certificateSignRequest.setStatus(2);
         certificateSignRequestRepository.save(certificateSignRequest);
+
+
         return certificateSignRequest;
     }
 }
