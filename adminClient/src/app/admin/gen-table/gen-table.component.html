@@ -1,0 +1,24 @@
+<div class="table-responsive table-wrapper">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th *ngIf="rowNum">#</th>
+                <th scope="col" *ngFor="let header of tableHeader">
+                    {{ header.headerName }}
+                </th>
+                <th scope="col" *ngFor="let operation of operations">
+                    {{ operation.icon }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr scope="row" *ngFor="let item of data">
+                <th *ngIf="rowNum">{{ item.tableId }}</th>
+                <td *ngFor="let header of tableHeader" [innerHTML]="generateField(item, header) | safeHtml"></td>
+                <td *ngFor="let operation of operations">
+                    <button class="btn" (click)="operation.operation(item)"><h5><fa-icon [icon]="operationIcon(operation.icon)"></fa-icon></h5></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,1 +1,6 @@
-<p>certificate-requests works!</p>
+<div class="container">
+    <app-gen-table id="requests" [rowNum]="true" [tableHeader]="tableHeader" [tableData]="requests" [fieldDecoration]="headerDecoration" [operations]="operations">
+    </app-gen-table>
+    <app-pagination [totalPages]="totalSize" [pageSize]="pageSize" (pageSelected)="changePage($event)">
+    </app-pagination>
+</div>
