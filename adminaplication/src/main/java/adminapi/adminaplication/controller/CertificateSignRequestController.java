@@ -2,7 +2,7 @@ package adminapi.adminaplication.controller;
 
 
 import adminapi.adminaplication.dto.mapper.CertificateSignRequestMapper;
-import adminapi.adminaplication.dto.request.CertificateSignRequestDTO;
+import adminapi.adminaplication.dto.response.CertificateSignRequestDTO;
 import adminapi.adminaplication.model.CertificateSignRequest;
 import adminapi.adminaplication.service.CertificateService;
 import adminapi.adminaplication.service.CertificateSignRequestService;
@@ -35,8 +35,13 @@ public class CertificateSignRequestController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CertificateSignRequestDTO> createSignRequest() {
-        CertificateSignRequest certificateSignRequest = certificateSignRequestService.createRequest();
+    public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
+        CertificateSignRequest certificateSignRequest = null;
+        try {
+            certificateSignRequest = certificateSignRequestService.createRequest(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return new ResponseEntity<>(mapper.toDto(certificateSignRequest), HttpStatus.OK);
     }

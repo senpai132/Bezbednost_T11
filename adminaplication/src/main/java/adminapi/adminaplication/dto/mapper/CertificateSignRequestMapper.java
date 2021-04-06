@@ -1,6 +1,6 @@
 package adminapi.adminaplication.dto.mapper;
 
-import adminapi.adminaplication.dto.request.CertificateSignRequestDTO;
+import adminapi.adminaplication.dto.response.CertificateSignRequestDTO;
 import adminapi.adminaplication.model.CertificateSignRequest;
 
 import java.util.ArrayList;

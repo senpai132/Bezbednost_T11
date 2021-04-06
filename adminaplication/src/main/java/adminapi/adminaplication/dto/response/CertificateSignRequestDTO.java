@@ -1,4 +1,4 @@
-package adminapi.adminaplication.dto.request;
+package adminapi.adminaplication.dto.response;
 
 public class CertificateSignRequestDTO {
     private Long id;
