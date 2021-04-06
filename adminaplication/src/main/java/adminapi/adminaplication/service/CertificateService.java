@@ -127,8 +127,8 @@ public class CertificateService {
                 certificateSignRequestService.getPublicKeyFromCSR(csr.getId()),
                 subjectName.build(), "leaf", String.valueOf(csr.getId()));
 
-        String keyStorePath = "pki/keystore/keyStore_" + csr.getId() + ".jks";
-        char[] keyStorePass = csr.getId().toString().toCharArray();
+        String keyStorePath = "src\\main\\resources\\keystore\\apiKeyStore.jks";
+        char[] keyStorePass = apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray();
 
         X509Certificate certificate = generateCertificate(subjectData, issuerData, "leaf");
 
@@ -139,14 +139,16 @@ public class CertificateService {
                 keyStore.load(new FileInputStream(f), keyStorePass);
             }else {
                 keyStore.load(null, keyStorePass);
-
-                keyStore.setKeyEntry("1", issuerKey,
-                        keyStorePass, new Certificate[]{certificate});
-
-                keyStore.store(new FileOutputStream(keyStorePath), keyStorePass);
-
-                return certificate;
             }
+            keyStore.setKeyEntry(csr.getSerialNumber(), issuerKey,
+                    keyStorePass, new Certificate[]{certificate});
+
+            writeCertificateToFile(keyStore,
+                    "root",
+                    "1", apiKeyStore.getCertDirectory());
+            keyStore.store(new FileOutputStream(keyStorePath), keyStorePass);
+
+            return certificate;
         } catch (IOException | CertificateException | NoSuchAlgorithmException |
                 NoSuchProviderException | KeyStoreException e) {
             e.printStackTrace();

@@ -17,6 +17,7 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.Security;
 import java.util.List;
 
 @Service
@@ -88,6 +89,7 @@ public class CertificateSignRequestService {
 
             JcaPKCS10CertificationRequest jcaCertRequest =
                     new JcaPKCS10CertificationRequest(csr.getEncoded()).setProvider("BC");
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             return jcaCertRequest.getPublicKey();
         } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
             e.printStackTrace();

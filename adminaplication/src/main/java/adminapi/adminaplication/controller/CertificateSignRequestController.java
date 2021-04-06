@@ -47,7 +47,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(mapper.toDto(certificateSignRequest), HttpStatus.OK);
     }
 
-    @RequestMapping(value="/accept/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/accept/{id}", method=RequestMethod.PUT)
     public ResponseEntity<?> acceptSignRequest(@PathVariable Long id){
 
         CertificateSignRequest certificateSignRequest = certificateSignRequestService.acceptRequest(id);
