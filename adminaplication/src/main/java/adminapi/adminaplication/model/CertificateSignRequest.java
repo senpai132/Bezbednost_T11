@@ -3,6 +3,7 @@ package adminapi.adminaplication.model;
 
 import javax.persistence.*;
 
+@Entity
 public class CertificateSignRequest {
     @Id
     @GeneratedValue
