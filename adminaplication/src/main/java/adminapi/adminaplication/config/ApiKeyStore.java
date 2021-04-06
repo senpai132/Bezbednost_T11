@@ -47,12 +47,14 @@ public class ApiKeyStore {
             }else {
                 keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 
-                /*X509Certificate rootCert = generateRoot(keyStore);
+
+                X509Certificate rootCert = generateRoot(keyStore);
+
                 certificateService.writeCertificateToFile(keyStore,
                         "root",
-                        "1", certDirectory);*/
+                        "1", certDirectory);
 
-                //keyStore.store(new FileOutputStream(KEYSTORE_FILE_PATH), KEYSTORE_PASSWORD.toCharArray());
+                keyStore.store(new FileOutputStream(KEYSTORE_FILE_PATH), KEYSTORE_PASSWORD.toCharArray());
             }
             return keyStore;
         } catch (IOException | CertificateException | NoSuchAlgorithmException |
@@ -77,7 +79,7 @@ public class ApiKeyStore {
         return certDirectory;
     }
 
-    private X509Certificate generateRoot(KeyStore keyStore) throws KeyStoreException {
+    private X509Certificate generateRoot(KeyStore keyStore) throws Exception {
         KeyPair kp = generatorService.generateKeyPair();
 
         X500NameBuilder builder = generateName("ROOT");
@@ -88,12 +90,14 @@ public class ApiKeyStore {
                 (kp.getPublic(), builder.build(), "root", "1");
 
         subjectData.setSerialNumber("1");
-        X509Certificate certificate = generatorService.generateCertificate
+        X509Certificate certificate = certificateService.generateCertificate
                 (subjectData, issuerData, "root");
 
         keyStore.setKeyEntry("1", kp.getPrivate(),
                 KEYSTORE_PASSWORD.toCharArray(), new Certificate[]{certificate});
-
+        System.out.println(issuerData);
+        System.out.println(subjectData);
+        System.out.println(certificate);
         return (X509Certificate) certificate;
     }
 

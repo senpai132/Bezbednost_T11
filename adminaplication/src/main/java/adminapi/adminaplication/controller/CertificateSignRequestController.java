@@ -48,16 +48,20 @@ public class CertificateSignRequestController {
     }
 
     @RequestMapping(value="/accept/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> acceptSignRequest(@PathVariable Integer id){
+    public ResponseEntity<?> acceptSignRequest(@PathVariable Long id){
 
         CertificateSignRequest certificateSignRequest = certificateSignRequestService.acceptRequest(id);
 
-        certificateService.generateCertificate(certificateSignRequest);
+        try {
+            certificateService.createCertificate(certificateSignRequest, "leaf");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @RequestMapping(value="/decline/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> declineSignRequest(@PathVariable Integer id){
+    public ResponseEntity<?> declineSignRequest(@PathVariable Long id){
 
         certificateSignRequestService.declineRequest(id);
 

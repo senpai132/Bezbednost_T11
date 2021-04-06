@@ -29,6 +29,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 import java.util.List;
 
 @Service
@@ -37,8 +38,11 @@ public class CertificateService {
     @Autowired
     private ApiKeyStore apiKeyStore;
 
-    public void generateCertificate(CertificateSignRequest certificateSignRequest) {
-    }
+    @Autowired
+    private GeneratorService generatorService;
+
+    @Autowired
+    private CertificateSignRequestService certificateSignRequestService;
 
     public List<X509Certificate> findAll() {
         return null;
@@ -50,11 +54,20 @@ public class CertificateService {
 
     public void writeCertificateToFile(KeyStore keyStore, String name, String alias, String certDirectory) throws Exception {
         java.security.cert.Certificate[] chain = keyStore.getCertificateChain(alias);
+        //Enumeration<String> enumeration = keyStore.aliases();
+        /*while(enumeration.hasMoreElements()) {
+            String el = enumeration.nextElement();
+            System.out.println("alias name: " + el);
+            Certificate certificate = keyStore.getCertificate(alias);
+            System.out.println(certificate.toString());
 
+        }*/
+        //System.out.println(chain.length);
         StringWriter stringWriter = new StringWriter();
         JcaPEMWriter pm = new JcaPEMWriter(stringWriter);
         for(Certificate certificate : chain) {
             X509Certificate cert = (X509Certificate)certificate;
+            System.out.println(cert);
             pm.writeObject(cert);
         }
         pm.close();
@@ -68,7 +81,7 @@ public class CertificateService {
         }
     }
 
-    /*public X509Certificate createCertificate(CertificateSignRequest csr, String templateType) throws Exception {
+    public X509Certificate createCertificate(CertificateSignRequest csr, String templateType) throws Exception {
 
         PrivateKey issuerKey = readPrivateKey(apiKeyStore.getKEYSTORE_FILE_PATH(),
                 apiKeyStore.getKEYSTORE_PASSWORD(), "1",
@@ -79,11 +92,11 @@ public class CertificateService {
         builder.addRDN(BCStyle.OU, "Klinicki centar");
         builder.addRDN(BCStyle.L, "Novi Sad");
         builder.addRDN(BCStyle.C, "RS");
-        IssuerData issuerData = generateIssuerData(issuerKey, builder.build());
-        X500NameBuilder subjectName = generateName(csr);
-        SubjectData subjectData = generateSubjectData(
-                certificateSigningRequestService.getPublicKeyFromCSR(csrId),
-                subjectName.build(), TemplateTypes.LEAF_HOSPITAL, String.valueOf(csr.getId()));
+        IssuerData issuerData = generatorService.generateIssuerData(issuerKey, builder.build());
+        X500NameBuilder subjectName = generatorService.generateName(csr);
+        SubjectData subjectData = generatorService.generateSubjectData(
+                certificateSignRequestService.getPublicKeyFromCSR(csr.getId()),
+                subjectName.build(), "leaf", String.valueOf(csr.getId()));
 
         String keyStorePath = "pki/keystore/keyStore_" + csr.getId() + ".jks";
         char[] keyStorePass = csr.getId().toString().toCharArray();
@@ -119,11 +132,14 @@ public class CertificateService {
                                                IssuerData issuerData,
                                                String templateTypes) throws Exception{
         try {
+            //System.out.println("USO1");
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
+
+            //System.out.println("USO@");
             builder = builder.setProvider("BC");
-
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             ContentSigner contentSigner = builder.build(issuerData.getPrivateKey());
-
+            //System.out.println("Prosao");
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerData.getX500name(),
                     new BigInteger(subjectData.getSerialNumber()),
                     subjectData.getStartDate(),
@@ -159,5 +175,22 @@ public class CertificateService {
             e.printStackTrace();
         }
         return null;
-    }*/
+    }
+
+    public PrivateKey readPrivateKey(String keyStoreFile, String keyStorePass, String alias, String pass) {
+        try {
+            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+            ks.load(in, keyStorePass.toCharArray());
+
+            if (ks.isKeyEntry(alias)) {
+                PrivateKey pk = (PrivateKey) ks.getKey(alias, pass.toCharArray());
+                return pk;
+            }
+        } catch (KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | CertificateException
+                | IOException | UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

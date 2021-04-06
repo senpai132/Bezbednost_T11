@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CertificateSignRequestRepository extends JpaRepository<CertificateSignRequest, Integer> {
     List<CertificateSignRequest> findByStatus(int status);
+    CertificateSignRequest findById(Long id);
 }

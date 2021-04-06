@@ -46,7 +46,7 @@ public class CertificateSignRequest {
 
     public CertificateSignRequest(String commonName, String lastName, String firstName,
                                   String organization, String organizationUnit, String country, String locality,
-                                  String email, int status, String serialNumber) {
+                                  String email, int status, String serialNumber, byte[] fullCertificate) {
         this.commonName = commonName;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -57,7 +57,7 @@ public class CertificateSignRequest {
         this.email = email;
         this.status = status;
         this.serialNumber = serialNumber;
-        //this.fullCertificate = fullCertificate;
+        this.fullCertificate = fullCertificate;
     }
 
     public CertificateSignRequest() {
