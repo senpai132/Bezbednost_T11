@@ -16,5 +16,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(HttpMethod.POST, "/api/certificate-sign-request");
         web.ignoring().antMatchers(HttpMethod.GET, "/api/certificate-sign-request");
         web.ignoring().antMatchers(HttpMethod.GET, "/api/certificate");
+        web.ignoring().antMatchers(HttpMethod.PUT, "/api/certificate-sign-request/accept/{id}");
     }
 }
