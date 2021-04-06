@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {CertificateRequest} from '../model/certificate-request';
+import { CertificateService } from '../services/certificate.service';
 
 @Component({
   selector: 'app-add-certificate',
@@ -7,9 +9,42 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddCertificateComponent implements OnInit {
 
-  constructor() { }
+  commonName: string;
+  lastName: string;
+  firstName: string;
+  organization: string;
+  organizationUnit: string;
+  country: string;
+  email: string;
+  locality: string;
+
+  constructor(private service: CertificateService) { 
+    this.commonName = "";
+    this.lastName = "";
+    this.firstName = "";
+    this.organization = "";
+    this.organizationUnit = "";
+    this.country = "";
+    this.email = "";
+    this.locality = "";
+  }
 
   ngOnInit(): void {
   }
 
+  addRequest(){
+    this.service.sendRequest({
+      "commonName": this.commonName,
+      "lastName": this.lastName,
+      "firstName": this.firstName,
+      "organization": this.organization,
+      "organizationUnit": this.organizationUnit,
+      "country": this.country,
+      "email": this.email,
+      "locality": this.locality
+    }).subscribe(res => {
+      console.log("New common name: " + res.commonName);
+      alert("Certificate request sent");
+    });
+  }
 }

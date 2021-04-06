@@ -1,1 +1,71 @@
-<p>add-certificate works!</p>
+<table>
+    <tr>
+        <th colspan="3">
+            <h1>New certificate request</h1>
+        </th>
+    </tr>
+    <tr style="height: 30px;"></tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Common name</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="commonName" type="text" [value]="commonName" (input)="commonName = $event.target.value">
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>First name</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="firstName" type="text" [value]="firstName" (input)="firstName = $event.target.value">
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Last name</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="lastName" type="text" [value]="lastName" (input)="lastName = $event.target.value">
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Organization</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="organization" type="text" [value]="organization" (input)="organization = $event.target.value">
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Organization unit</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="organizationUnit" type="text" [value]="organizationUnit" (input)="organizationUnit = $event.target.value">
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Country</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="country" type="text" [value]="country" (input)="country = $event.target.value">
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Email</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="email" type="text" [value]="email" (input)="email = $event.target.value">
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            <p>Locality</p>
+        </td>
+        <td style="width: 2%;"></td>
+        <td style="width: 68%;"><input id="locality" type="text" [value]="locality" (input)="locality = $event.target.value">
+    </tr>
+    <tr style="height: 20px;"></tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td><button class="add-btn" (click)="addRequest()">Send request</button></td>
+    </tr>
+</table>
