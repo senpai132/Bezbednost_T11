@@ -47,12 +47,12 @@ public class ApiKeyStore {
             }else {
                 keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
 
-                X509Certificate rootCert = generateRoot(keyStore);
+                /*X509Certificate rootCert = generateRoot(keyStore);
                 certificateService.writeCertificateToFile(keyStore,
                         "root",
-                        "1", certDirectory);
+                        "1", certDirectory);*/
 
-                keyStore.store(new FileOutputStream(KEYSTORE_FILE_PATH), KEYSTORE_PASSWORD.toCharArray());
+                //keyStore.store(new FileOutputStream(KEYSTORE_FILE_PATH), KEYSTORE_PASSWORD.toCharArray());
             }
             return keyStore;
         } catch (IOException | CertificateException | NoSuchAlgorithmException |

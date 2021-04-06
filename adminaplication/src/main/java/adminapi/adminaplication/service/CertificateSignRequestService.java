@@ -57,20 +57,23 @@ public class CertificateSignRequestService {
         String serialNumber = getField(x500Name, BCStyle.SERIALNUMBER);
         String locality = getField(x500Name, BCStyle.L);
 
-        certificateSignRequestRepository.save(
-                new CertificateSignRequest(
-                        commonName,
-                        lastName,
-                        firstName,
-                        organization,
-                        organizationUnit,
-                        country,
-                        locality,
-                        email,
-                        0,
-                        serialNumber
-                        ));
-        return null;
+        CertificateSignRequest csr_pom = new CertificateSignRequest(
+                commonName,
+                lastName,
+                firstName,
+                organization,
+                organizationUnit,
+                country,
+                locality,
+                email,
+                0,
+                serialNumber
+        );
+
+
+
+        return certificateSignRequestRepository.save(
+                csr_pom);
     }
 
     private PKCS10CertificationRequest extractCertificationRequest(byte[] rawRequest) throws IOException {

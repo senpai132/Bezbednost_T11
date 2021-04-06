@@ -37,6 +37,7 @@ public class CertificateSignRequestController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
         CertificateSignRequest certificateSignRequest = null;
+        System.out.println("Usao");
         try {
             certificateSignRequest = certificateSignRequestService.createRequest(request);
         } catch (Exception e) {

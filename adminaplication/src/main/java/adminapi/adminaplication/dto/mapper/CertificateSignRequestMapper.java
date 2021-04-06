@@ -44,6 +44,7 @@ public class CertificateSignRequestMapper implements MapperInterface<Certificate
         certificateSignRequestDTO.setLastName(entity.getLastName());
         certificateSignRequestDTO.setOrganization(entity.getOrganization());
         certificateSignRequestDTO.setOrganizationUnit(entity.getOrganizationUnit());
+        certificateSignRequestDTO.setSerialNumber(entity.getSerialNumber());
 
         return certificateSignRequestDTO;
     }

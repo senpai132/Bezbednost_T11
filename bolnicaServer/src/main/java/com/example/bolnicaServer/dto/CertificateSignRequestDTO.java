@@ -1,4 +1,4 @@
-package adminapi.adminaplication.dto.response;
+package com.example.bolnicaServer.dto;
 
 public class CertificateSignRequestDTO {
     private Long id;
@@ -12,21 +12,13 @@ public class CertificateSignRequestDTO {
     private String locality;
     private String serialNumber;
 
-    public CertificateSignRequestDTO(Long id, String commonName, String secondName, String firstName,
-                                     String organization, String organizationUnit, String country, String locality, String email, String serialNumber) {
-        this.id = id;
-        this.commonName = commonName;
-        this.lastName = secondName;
-        this.firstName = firstName;
-        this.organization = organization;
-        this.organizationUnit = organizationUnit;
-        this.country = country;
-        this.email = email;
-        this.locality = locality;
-        this.serialNumber = serialNumber;
+    public Long getId() {
+        return id;
     }
 
-    public CertificateSignRequestDTO(){}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getSerialNumber() {
         return serialNumber;
@@ -34,14 +26,6 @@ public class CertificateSignRequestDTO {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCommonName() {
@@ -54,14 +38,6 @@ public class CertificateSignRequestDTO {
 
     public String getLastName() {
         return lastName;
-    }
-
-    public String getLocality() {
-        return locality;
-    }
-
-    public void setLocality(String locality) {
-        this.locality = locality;
     }
 
     public void setLastName(String lastName) {
@@ -106,5 +82,13 @@ public class CertificateSignRequestDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
     }
 }
