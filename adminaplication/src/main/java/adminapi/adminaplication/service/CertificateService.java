@@ -4,6 +4,7 @@ import adminapi.adminaplication.config.ApiKeyStore;
 import adminapi.adminaplication.model.CertificateSignRequest;
 import adminapi.adminaplication.model.IssuerData;
 import adminapi.adminaplication.model.SubjectData;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -14,6 +15,7 @@ import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
@@ -94,10 +96,12 @@ public class CertificateService {
         //System.out.println(chain.length);
         StringWriter stringWriter = new StringWriter();
         JcaPEMWriter pm = new JcaPEMWriter(stringWriter);
-        for(Certificate certificate : chain) {
-            X509Certificate cert = (X509Certificate)certificate;
-            System.out.println(cert);
-            pm.writeObject(cert);
+        if(chain != null){
+            for(Certificate certificate : chain) {
+                X509Certificate cert = (X509Certificate)certificate;
+                System.out.println(cert);
+                pm.writeObject(cert);
+            }
         }
         pm.close();
 
@@ -110,18 +114,31 @@ public class CertificateService {
         }
     }
 
+    public IssuerData loadIssuer(String alias) throws KeyStoreException, CertificateException, NoSuchAlgorithmException,
+            UnrecoverableKeyException {
+        KeyStore keyStore = apiKeyStore.setUpStore();
+        //Iscitava se sertifikat koji ima dati alias
+        Certificate cert = keyStore.getCertificate(alias);
+        //Iscitava se privatni kljuc vezan za javni kljuc koji se nalazi na sertifikatu sa datim aliasom
+        PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray());
+
+        X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
+        return new IssuerData(privKey, issuerName);
+    }
+
     public X509Certificate createCertificate(CertificateSignRequest csr, String templateType) throws Exception {
 
         PrivateKey issuerKey = readPrivateKey(apiKeyStore.getKEYSTORE_FILE_PATH(),
                 apiKeyStore.getKEYSTORE_PASSWORD(), "1",
                 apiKeyStore.getKEYSTORE_PASSWORD());
-        X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
+        /*X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, "ROOT");
         builder.addRDN(BCStyle.O, "MZ-Srbija");
         builder.addRDN(BCStyle.OU, "Klinicki centar");
         builder.addRDN(BCStyle.L, "Novi Sad");
         builder.addRDN(BCStyle.C, "RS");
-        IssuerData issuerData = generatorService.generateIssuerData(issuerKey, builder.build());
+        IssuerData issuerData = generatorService.generateIssuerData(issuerKey, builder.build());*/
+        IssuerData issuerData = loadIssuer("1");
         X500NameBuilder subjectName = generatorService.generateName(csr);
         SubjectData subjectData = generatorService.generateSubjectData(
                 certificateSignRequestService.getPublicKeyFromCSR(csr.getId()),
@@ -132,7 +149,7 @@ public class CertificateService {
 
         X509Certificate certificate = generateCertificate(subjectData, issuerData, "leaf");
 
-        try {
+        /*try {
             KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
             File f = new File(keyStorePath);
             if (f.exists()){
@@ -154,10 +171,51 @@ public class CertificateService {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
+        KeyStore keyStore = apiKeyStore.setUpStore();
 
-        return null;
+        Certificate[] certificates = this.createChain("1", certificate);
+
+        this.writeCertificateToKeyStore(csr.getSerialNumber(), certificates,
+                issuerData.getPrivateKey());
+        this.writeCertificateToFile(keyStore, "leaf", csr.getSerialNumber(), apiKeyStore.getCertDirectory());
+        return certificate;
     }
+
+
+    private Certificate[] createChain(String issuerAlias,Certificate certificate){
+        Certificate[] certificatesChainIssuer = this.getCertificateChainByAlias(issuerAlias);
+
+        int size = certificatesChainIssuer.length;
+        Certificate[] certificatesChain = new Certificate[size + 1];
+        certificatesChain[0] = certificate;
+
+
+        System.arraycopy(certificatesChainIssuer, 0, certificatesChain, 1, size);
+        return certificatesChain;
+    }
+
+    private Certificate[] getCertificateChainByAlias(String alias){
+        KeyStore ks = apiKeyStore.setUpStore();
+        Certificate[] certificates = null;
+        try {
+            if (ks.isKeyEntry(alias)) {
+                certificates = ks.getCertificateChain(alias);
+            }
+        } catch (KeyStoreException e) {
+            throw new ResourceNotFoundException("Certificate doesn't exist");
+        }
+        return certificates;
+    }
+
+    private void  writeCertificateToKeyStore(String alias, Certificate[] certificates, PrivateKey pk) throws Exception{
+        apiKeyStore.setUpStore().setKeyEntry(alias, pk,
+                apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray(), certificates);
+
+        apiKeyStore.setUpStore().store(new FileOutputStream(apiKeyStore.getKEYSTORE_FILE_PATH()),
+                apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray());
+    }
+
 
     public X509Certificate generateCertificate(SubjectData subjectData,
                                                IssuerData issuerData,

@@ -33,7 +33,7 @@ public class CertificateMapper implements MapperInterface<X509Certificate, Certi
         certificateDTO.setStartDate(entity.getNotBefore());
         certificateDTO.setEndDate(entity.getNotAfter());
 
-        X500Principal principalSubject = entity.getIssuerX500Principal();
+        X500Principal principalSubject = entity.getSubjectX500Principal();
         X500Name x500subject = new X500Name( principalSubject.getName() );
         RDN cnSubject = x500subject.getRDNs(BCStyle.CN)[0];
 
