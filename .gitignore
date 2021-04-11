@@ -1,3 +1,4 @@
 
 adminaplication/src/main/resources/certificates/root.crt
 adminaplication/src/main/resources/keystore/apiKeyStore.jks
+*.crt
