@@ -17,6 +17,7 @@ export class AddCertificateComponent implements OnInit {
   country: string;
   email: string;
   locality: string;
+  serialNumber: string;
 
   constructor(private service: CertificateService) { 
     this.commonName = "";
@@ -27,6 +28,7 @@ export class AddCertificateComponent implements OnInit {
     this.country = "";
     this.email = "";
     this.locality = "";
+    this.serialNumber = "";
   }
 
   ngOnInit(): void {
@@ -41,9 +43,10 @@ export class AddCertificateComponent implements OnInit {
       "organizationUnit": this.organizationUnit,
       "country": this.country,
       "email": this.email,
-      "locality": this.locality
+      "locality": this.locality,
+      "serialNumber": this.serialNumber
     }).subscribe(res => {
-      console.log("New common name: " + res.commonName);
+      console.log("response: " + res);
       alert("Certificate request sent");
     }, err => {
       console.log(err);

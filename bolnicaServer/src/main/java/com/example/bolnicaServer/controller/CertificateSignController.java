@@ -5,6 +5,7 @@ import com.example.bolnicaServer.service.CertificateSignService;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,10 @@ public class CertificateSignController {
     @Autowired
     private CertificateSignService certificateService;
 
-    @PostMapping("/signingrequest")
+    @RequestMapping(value = "/signingrequest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendSertificateRequest(@RequestBody CertificateSignRequestDTO csr) throws IOException, OperatorCreationException {
+
+        System.out.println("Stigne do backend-a bolnice!");
 
         certificateService.sendRequest(csr);
 

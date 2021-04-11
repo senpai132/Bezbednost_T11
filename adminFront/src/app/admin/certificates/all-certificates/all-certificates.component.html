@@ -9,7 +9,7 @@
             <th>End Date</th>
             <th>Subject</th>
             <th>Issuer</th>
-            <th>Removal</th>
+            <th>Revoke</th>
         </tr>
         <tr style="height: 15px;"></tr>
         <tr *ngFor="let certificate of certificates">
@@ -18,7 +18,7 @@
             <td>{{certificate.endDate}}</td>
             <td>{{certificate.subjectName}}</td>
             <td>{{certificate.issuerName}}</td>
-            <td><button class="removal-btn" (click)="remove(certificate.serialNumber)">REMOVE</button></td>
+            <td><button class="removal-btn" (click)="remove(certificate.serialNumber)">REVOKE</button></td>
         </tr>
     </table>
 </div>

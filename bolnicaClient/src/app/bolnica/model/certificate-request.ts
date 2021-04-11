@@ -7,5 +7,6 @@ export interface CertificateRequest {
     organizationUnit: string,
     country: string,
     email: string,
-    locality: string
+    locality: string,
+    serialNumber: string
 }
