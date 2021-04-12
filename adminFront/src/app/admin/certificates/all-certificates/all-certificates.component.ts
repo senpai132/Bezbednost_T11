@@ -28,7 +28,7 @@ export class AllCertificatesComponent implements OnInit {
   }
 
   remove(id){
-    this.CertificateService.remove(id).subscribe(res => {
+    this.CertificateService.revoke(id).subscribe(res => {
       this.saveChange();
     });
   }

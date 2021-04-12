@@ -23,8 +23,8 @@ export class CertificateService {
     return this.http.get<Certificate[]>(this.port + this.path, { headers: this.headers, responseType: 'json' });
   }
 
-  remove(serialNumber: number):  Observable<any> {
-    return this.http.delete<any>(this.port + this.request + serialNumber, { headers: this.headers, responseType: 'json' });
+  revoke(serialNumber: number):  Observable<any> {
+    return this.http.delete<any>(this.port + this.path + '/' + serialNumber, { headers: this.headers, responseType: 'json' });
   }
 
   allRequests(): Observable<CertificateRequest[]> {

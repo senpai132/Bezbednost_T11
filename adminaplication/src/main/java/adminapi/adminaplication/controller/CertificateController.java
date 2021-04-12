@@ -25,14 +25,14 @@ public class CertificateController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CertificateDTO>> getAll() {
-        List<X509Certificate> certificates = certificateService.findAll();
+        List<X509Certificate> certificates = certificateService.findAllActive();
 
         return new ResponseEntity<>(mapper.toDtoList(certificates), HttpStatus.OK);
     }
 
     @RequestMapping(value="/{serialNumber}", method=RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> removeCertificate(@PathVariable BigInteger serialNumber) {
-        certificateService.removeCertificate(serialNumber);
+    public ResponseEntity<?> revokeCertificate(@PathVariable BigInteger serialNumber) {
+        certificateService.revokeCertificate(serialNumber);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

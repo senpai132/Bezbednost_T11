@@ -3,7 +3,9 @@ package adminapi.adminaplication.service;
 import adminapi.adminaplication.config.ApiKeyStore;
 import adminapi.adminaplication.model.CertificateSignRequest;
 import adminapi.adminaplication.model.IssuerData;
+import adminapi.adminaplication.model.RevokedCertificate;
 import adminapi.adminaplication.model.SubjectData;
+import adminapi.adminaplication.repository.RevokedCertificateRepository;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -33,6 +35,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -46,16 +49,22 @@ public class CertificateService {
     private GeneratorService generatorService;
 
     @Autowired
+    private RevokedCertificateRepository revokedCertificateRepository;
+
+    @Autowired
     private CertificateSignRequestService certificateSignRequestService;
 
-    public List<X509Certificate> findAll() {
+    public List<X509Certificate> findAllActive() {
 
         KeyStore ks = apiKeyStore.setUpStore();
         try {
             List<X509Certificate> certificates = new ArrayList<>();
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
-                certificates.add(readCertificate(aliases.nextElement()));
+                String alias = aliases.nextElement();
+                String serialNumber = alias.replaceAll("^0", "");
+                if(!revokedCertificateRepository.findBySerialNumber(serialNumber).isPresent())
+                    certificates.add(readCertificate(alias));
             }
             return certificates;
         } catch (KeyStoreException e) {
@@ -80,7 +89,11 @@ public class CertificateService {
         return (X509Certificate) cert;
     }
 
-    public void removeCertificate(BigInteger serialNumber) {
+    public void revokeCertificate(BigInteger serialNumber) {
+        Date revocationDate = new Date();
+        RevokedCertificate revokedCertificate = new RevokedCertificate(serialNumber.toString(), revocationDate);
+
+        revokedCertificateRepository.save(revokedCertificate);
     }
 
     public void writeCertificateToFile(KeyStore keyStore, String name, String alias, String certDirectory) throws Exception {
