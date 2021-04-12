@@ -142,7 +142,7 @@ public class CertificateService {
         X500NameBuilder subjectName = generatorService.generateName(csr);
         SubjectData subjectData = generatorService.generateSubjectData(
                 certificateSignRequestService.getPublicKeyFromCSR(csr.getId()),
-                subjectName.build(), "leaf", String.valueOf(csr.getId()));
+                subjectName.build(), "leaf", String.valueOf(csr.getSerialNumber()));
 
         String keyStorePath = "src\\main\\resources\\keystore\\apiKeyStore.jks";
         char[] keyStorePass = apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray();
@@ -178,7 +178,7 @@ public class CertificateService {
 
         this.writeCertificateToKeyStore(csr.getSerialNumber(), certificates,
                 issuerData.getPrivateKey());
-        this.writeCertificateToFile(keyStore, "leaf", csr.getSerialNumber(), apiKeyStore.getCertDirectory());
+        this.writeCertificateToFile(keyStore, "leaf_" + csr.getCommonName(), csr.getSerialNumber(), apiKeyStore.getCertDirectory());
         return certificate;
     }
 

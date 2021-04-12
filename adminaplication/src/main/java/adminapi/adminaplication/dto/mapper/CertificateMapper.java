@@ -8,7 +8,9 @@ import org.bouncycastle.asn1.x500.style.IETFUtils;
 
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
@@ -30,8 +32,11 @@ public class CertificateMapper implements MapperInterface<X509Certificate, Certi
     public CertificateDTO toDto(X509Certificate entity) {
         CertificateDTO certificateDTO = new CertificateDTO();
         certificateDTO.setSerialNumber(entity.getSerialNumber());
-        certificateDTO.setStartDate(entity.getNotBefore());
-        certificateDTO.setEndDate(entity.getNotAfter());
+        Date startDate = entity.getNotBefore();
+        Date endDate = entity.getNotAfter();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        certificateDTO.setStartDate(formatter.format(startDate));
+        certificateDTO.setEndDate(formatter.format(endDate));
 
         X500Principal principalSubject = entity.getSubjectX500Principal();
         X500Name x500subject = new X500Name( principalSubject.getName() );
