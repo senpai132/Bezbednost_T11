@@ -73,6 +73,26 @@ public class CertificateService {
         return null;
     }
 
+    public List<RevokedCertificate> findAllRemoved() {
+
+        KeyStore ks = apiKeyStore.setUpStore();
+        try {
+            List<RevokedCertificate> certificates = new ArrayList<>();
+            Enumeration<String> aliases = ks.aliases();
+            while (aliases.hasMoreElements()) {
+                String alias = aliases.nextElement();
+                String serialNumber = alias.replaceAll("^0", "");
+                RevokedCertificate revokedCertificate = revokedCertificateRepository.findBySerialNumber(serialNumber).orElse(null);
+                if(revokedCertificate != null)
+                    certificates.add(revokedCertificate);
+            }
+            return certificates;
+        } catch (KeyStoreException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public X509Certificate readCertificate(String alias) {
         KeyStore ks = apiKeyStore.setUpStore();
         Certificate cert = null;
@@ -89,23 +109,23 @@ public class CertificateService {
         return (X509Certificate) cert;
     }
 
-    public void revokeCertificate(BigInteger serialNumber) {
+    public void revokeCertificate(String serialNumber, String reason) {
         Date revocationDate = new Date();
-        RevokedCertificate revokedCertificate = new RevokedCertificate(serialNumber.toString(), revocationDate);
+        RevokedCertificate revokedCertificate = new RevokedCertificate(serialNumber, revocationDate, reason);
 
         revokedCertificateRepository.save(revokedCertificate);
     }
 
+    /*public void revokeCertificate(RevokedCertificate revokedCertificate) {
+        Date revocationDate = new Date();
+        //RevokedCertificate revokedCertificate = new RevokedCertificate(serialNumber.toString(), revocationDate, reason);
+        revokedCertificate.setRevocationDate(revocationDate);
+        revokedCertificateRepository.save(revokedCertificate);
+    }*/
+
     public void writeCertificateToFile(KeyStore keyStore, String name, String alias, String certDirectory) throws Exception {
         java.security.cert.Certificate[] chain = keyStore.getCertificateChain(alias);
         //Enumeration<String> enumeration = keyStore.aliases();
-        /*while(enumeration.hasMoreElements()) {
-            String el = enumeration.nextElement();
-            System.out.println("alias name: " + el);
-            Certificate certificate = keyStore.getCertificate(alias);
-            System.out.println(certificate.toString());
-
-        }*/
         //System.out.println(chain.length);
         StringWriter stringWriter = new StringWriter();
         JcaPEMWriter pm = new JcaPEMWriter(stringWriter);
@@ -144,13 +164,7 @@ public class CertificateService {
         PrivateKey issuerKey = readPrivateKey(apiKeyStore.getKEYSTORE_FILE_PATH(),
                 apiKeyStore.getKEYSTORE_PASSWORD(), "1",
                 apiKeyStore.getKEYSTORE_PASSWORD());
-        /*X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-        builder.addRDN(BCStyle.CN, "ROOT");
-        builder.addRDN(BCStyle.O, "MZ-Srbija");
-        builder.addRDN(BCStyle.OU, "Klinicki centar");
-        builder.addRDN(BCStyle.L, "Novi Sad");
-        builder.addRDN(BCStyle.C, "RS");
-        IssuerData issuerData = generatorService.generateIssuerData(issuerKey, builder.build());*/
+
         IssuerData issuerData = loadIssuer("1");
         X500NameBuilder subjectName = generatorService.generateName(csr);
         SubjectData subjectData = generatorService.generateSubjectData(
@@ -162,29 +176,6 @@ public class CertificateService {
 
         X509Certificate certificate = generateCertificate(subjectData, issuerData, "leaf");
 
-        /*try {
-            KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
-            File f = new File(keyStorePath);
-            if (f.exists()){
-                keyStore.load(new FileInputStream(f), keyStorePass);
-            }else {
-                keyStore.load(null, keyStorePass);
-            }
-            keyStore.setKeyEntry(csr.getSerialNumber(), issuerKey,
-                    keyStorePass, new Certificate[]{certificate});
-
-            writeCertificateToFile(keyStore,
-                    "root",
-                    "1", apiKeyStore.getCertDirectory());
-            keyStore.store(new FileOutputStream(keyStorePath), keyStorePass);
-
-            return certificate;
-        } catch (IOException | CertificateException | NoSuchAlgorithmException |
-                NoSuchProviderException | KeyStoreException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         KeyStore keyStore = apiKeyStore.setUpStore();
 
         Certificate[] certificates = this.createChain("1", certificate);

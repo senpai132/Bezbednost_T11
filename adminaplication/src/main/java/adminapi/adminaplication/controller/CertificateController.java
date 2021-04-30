@@ -1,7 +1,11 @@
 package adminapi.adminaplication.controller;
 
 import adminapi.adminaplication.dto.mapper.CertificateMapper;
+import adminapi.adminaplication.dto.mapper.RevokedMapper;
+import adminapi.adminaplication.dto.request.RevocationDTO;
 import adminapi.adminaplication.dto.response.CertificateDTO;
+import adminapi.adminaplication.dto.response.RevokedCertificateDTO;
+import adminapi.adminaplication.model.RevokedCertificate;
 import adminapi.adminaplication.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,8 @@ public class CertificateController {
 
     private CertificateMapper mapper = new CertificateMapper();
 
+    private RevokedMapper revokedMapper = new RevokedMapper();
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CertificateDTO>> getAll() {
         List<X509Certificate> certificates = certificateService.findAllActive();
@@ -30,11 +36,24 @@ public class CertificateController {
         return new ResponseEntity<>(mapper.toDtoList(certificates), HttpStatus.OK);
     }
 
-    @RequestMapping(value="/{serialNumber}", method=RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> revokeCertificate(@PathVariable BigInteger serialNumber) {
-        certificateService.revokeCertificate(serialNumber);
+    @RequestMapping(value="/removed", method = RequestMethod.GET)
+    public ResponseEntity<List<RevokedCertificateDTO>> getRemoved() {
+        List<RevokedCertificate> certificates = certificateService.findAllRemoved();
+
+        return new ResponseEntity<>(revokedMapper.toDtoList(certificates), HttpStatus.OK);
+    }
+    //value="/{serialNumber}",
+    @RequestMapping(method=RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> revokeCertificate(@RequestBody RevocationDTO revocationDTO) {
+        certificateService.revokeCertificate(revocationDTO.getSerialNumber(), revocationDTO.getRevocationReason());
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    /*@RequestMapping(method=RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> revokeCertificate(@RequestBody RevokedCertificateDTO revokedCertificateDTO) {
+        certificateService.revokeCertificate(revokedMapper.toEntity(revokedCertificateDTO));
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }*/
 }

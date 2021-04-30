@@ -1,44 +1,28 @@
-package adminapi.adminaplication.model;
+package adminapi.adminaplication.dto.response;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.Date;
 
-@Entity
-public class RevokedCertificate {
-    @Id
-    @GeneratedValue
+public class RevokedCertificateDTO {
     private int id;
-
-    @Column
     private String serialNumber;
-
-    @Column
-    private Date revocationDate;
-
-    @Column
+    private String revocationDate;
     private String revocationReason;
 
-
-    public RevokedCertificate(int id, String serialNumber, Date revocationDate, String revocationReason) {
+    public RevokedCertificateDTO(int id, String serialNumber, String revocationDate, String revocationReason) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.revocationDate = revocationDate;
         this.revocationReason = revocationReason;
     }
 
-    public RevokedCertificate(String serialNumber, Date revocationDate, String revocationReason) {
-        this.serialNumber = serialNumber;
-        this.revocationDate = revocationDate;
-        this.revocationReason = revocationReason;
-    }
-
-    public RevokedCertificate(){}
+    public RevokedCertificateDTO(){}
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getSerialNumber() {
@@ -49,11 +33,11 @@ public class RevokedCertificate {
         this.serialNumber = serialNumber;
     }
 
-    public Date getRevocationDate() {
+    public String getRevocationDate() {
         return revocationDate;
     }
 
-    public void setRevocationDate(Date revocationDate) {
+    public void setRevocationDate(String revocationDate) {
         this.revocationDate = revocationDate;
     }
 
