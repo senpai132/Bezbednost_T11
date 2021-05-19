@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AllCertificatesComponent } from './admin/certificates/all-certificates/all-certificates.component';
 import { CertificateRequestsComponent } from './admin/certificates/certificate-requests/certificate-requests.component';
+import { RevokedCertificatesComponent } from './admin/certificates/revoked-certificates/revoked-certificates.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AllCertificatesComponent,
-    CertificateRequestsComponent
+    CertificateRequestsComponent,
+    RevokedCertificatesComponent
   ],
   imports: [
     BrowserModule,

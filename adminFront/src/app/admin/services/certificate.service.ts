@@ -5,6 +5,7 @@ import { HttpParams } from '@angular/common/http';
 import { Certificate } from '../model/certificate';
 import { CertificateRequest } from '../model/certificate-request';
 import { Revocation } from '../model/revocation';
+import { RevokedCertificate } from '../model/revoked-certificate';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,10 @@ export class CertificateService {
 
   revoke(revocation: Revocation):  Observable<any> {
     return this.http.put<any>(this.port + this.path, revocation, { headers: this.headers, responseType: 'json' });
+  }
+
+  getRevoked(): Observable<RevokedCertificate[]>{
+    return this.http.get<RevokedCertificate[]>(this.port + this.path + '/removed', { headers: this.headers, responseType: 'json' });
   }
 
   allRequests(): Observable<CertificateRequest[]> {
