@@ -23,8 +23,6 @@ public class CertificateSignController {
     @RequestMapping(value = "/signingrequest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendSertificateRequest(@RequestBody CertificateSignRequestDTO csr) throws IOException, OperatorCreationException {
 
-        System.out.println("Stigne do backend-a bolnice!");
-
         certificateService.sendRequest(csr);
 
         return new ResponseEntity<>(null, HttpStatus.OK);

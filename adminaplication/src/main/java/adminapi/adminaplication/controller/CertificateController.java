@@ -43,7 +43,7 @@ public class CertificateController {
         return new ResponseEntity<>(revokedMapper.toDtoList(certificates), HttpStatus.OK);
     }
     //value="/{serialNumber}",
-    @RequestMapping(method=RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> revokeCertificate(@RequestBody RevocationDTO revocationDTO) {
         certificateService.revokeCertificate(revocationDTO.getSerialNumber(), revocationDTO.getRevocationReason());
 

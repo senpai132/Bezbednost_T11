@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { Certificate } from '../model/certificate';
 import { CertificateRequest } from '../model/certificate-request';
+import { Revocation } from '../model/revocation';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,8 @@ export class CertificateService {
     return this.http.get<Certificate[]>(this.port + this.path, { headers: this.headers, responseType: 'json' });
   }
 
-  revoke(serialNumber: number):  Observable<any> {
-    return this.http.delete<any>(this.port + this.path + '/' + serialNumber, { headers: this.headers, responseType: 'json' });
+  revoke(revocation: Revocation):  Observable<any> {
+    return this.http.put<any>(this.port + this.path, revocation, { headers: this.headers, responseType: 'json' });
   }
 
   allRequests(): Observable<CertificateRequest[]> {
