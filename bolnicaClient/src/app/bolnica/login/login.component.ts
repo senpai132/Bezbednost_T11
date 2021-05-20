@@ -25,13 +25,22 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  } 
+
   login() {
     const val = this.form.value;
     this.wrongUsernameOrPass = false;
 
     if (val.username && val.password) {
-      this.invalidData = false;
-      alert("should be loged in");
+      if (this.validateEmail(val.username)){
+        this.invalidData = false;
+        alert("should be loged in");
+      }else{
+        alert("Email is not valid!");
+      }
     }
     else{
       this.invalidData = true;

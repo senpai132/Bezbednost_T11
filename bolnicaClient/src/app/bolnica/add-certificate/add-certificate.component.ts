@@ -34,23 +34,70 @@ export class AddCertificateComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  addRequest(){
-    this.service.sendRequest({
-      "commonName": this.commonName,
-      "lastName": this.lastName,
-      "firstName": this.firstName,
-      "organization": this.organization,
-      "organizationUnit": this.organizationUnit,
-      "country": this.country,
-      "email": this.email,
-      "locality": this.locality,
-      "serialNumber": this.serialNumber
-    }).subscribe(res => {
-      console.log("response: " + res);
-      alert("Certificate request sent");
-    }, err => {
-      console.log(err);
-      alert("Something went wrong!");
-    });
+  someEmpty(): boolean{
+    if (this.commonName == ""){
+      return true;
+    }
+    if (this.country == ""){
+      return true;
+    }
+    if (this.lastName == ""){
+      return true;
+    }
+    if (this.firstName == ""){
+      return true;
+    }
+    if (this.organization == ""){
+      return true;
+    }
+    if (this.organizationUnit == ""){
+      return true;
+    }
+    if (this.email == ""){
+      return true;
+    }
+    if (this.locality == ""){
+      return true;
+    }
+    if (this.serialNumber == ""){
+      return true;
+    }
   }
+
+  validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  } 
+
+  addRequest(){
+    if (this.someEmpty()){
+      alert("Some fields remain empty!");
+    }
+    else if (!this.validateEmail(this.email)){
+      alert("Email is not valid!");
+    }
+    else if (!/^\d+$/.test(this.serialNumber)){
+      alert("Serial number can only contain digits")
+    }
+    else{
+      this.service.sendRequest({
+        "commonName": this.commonName,
+        "lastName": this.lastName,
+        "firstName": this.firstName,
+        "organization": this.organization,
+        "organizationUnit": this.organizationUnit,
+        "country": this.country,
+        "email": this.email,
+        "locality": this.locality,
+        "serialNumber": this.serialNumber
+      }).subscribe(res => {
+        console.log("response: " + res);
+        alert("Certificate request sent");
+      }, err => {
+        console.log(err);
+        alert("Something went wrong!");
+      });
+    }
+  }
+
 }
