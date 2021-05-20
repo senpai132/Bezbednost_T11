@@ -4,6 +4,7 @@ import { AllCertificatesComponent } from './admin/certificates/all-certificates/
 import { CertificateRequestsComponent } from './admin/certificates/certificate-requests/certificate-requests.component';
 import { RevokedCertificatesComponent } from './admin/certificates/revoked-certificates/revoked-certificates.component';
 import { LoginComponent } from './admin/login/login.component';
+import { AllUsersComponent } from './admin/all-users/all-users.component';
 
 
 const routes: Routes = [{
@@ -21,6 +22,10 @@ const routes: Routes = [{
 {
   path: 'revoked',
   component: RevokedCertificatesComponent
+},
+{
+  path: 'users',
+  component: AllUsersComponent
 }];
 
 @NgModule({

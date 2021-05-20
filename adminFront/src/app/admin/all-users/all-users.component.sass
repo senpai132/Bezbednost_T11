@@ -1,0 +1,90 @@
+%button
+    border: 1px solid black
+    color: 	#ffffff
+
+div
+    padding: 2px
+
+#all_users
+    width: 90%
+    z-index: 3
+    
+    h1, td, th
+        text-align: center
+        background-color: white
+    
+    table
+        width: 90%
+        margin-left: 10%
+        margin-right: 10%
+        background-color: #b00b69
+
+        .removal-btn
+            @extends %button
+            background-color: #ff1a1a
+
+        .change-btn
+            @extends %button
+            background-color: #ffff00
+
+    .add-btn
+        @extends %button
+        background-color: #00ff00
+        float: right
+        margin-top: 5px
+
+%popup-btn
+    color: white
+    height: 35px
+
+
+.popup
+    display: block
+    background-color: #b3b3b3e7
+    position: absolute
+    top: 0px
+    bottom: 0px
+    left: 0px
+    right: 0px
+    z-index: 2
+
+    .popup-inner
+        border: 1px solid black
+        background-color: #25222273
+        margin-top: 5%
+        margin-left: 35%
+        margin-right: 25%
+        width: 30%
+        height: 60%
+        z-index: 1
+
+        input, select
+            width: 90%
+            margin-left: 10px
+        
+        label
+            margin-left: 10px
+            margin-top: 10px
+
+        .modal-footer
+            float: right
+            margin-top: 15px
+
+            .btn-outline-dark
+                color: white
+                height: 35px
+                background-color: #3333ff
+
+            .close
+                color: white
+                height: 35px
+                background-color: #1a1a1a
+
+        .modal-header
+            opacity: 1
+            overflow: hidden
+            padding-top: 40px
+
+            .modal-title
+                text-align: center
+                font-size: 30px
