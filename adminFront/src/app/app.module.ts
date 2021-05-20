@@ -10,6 +10,7 @@ import { RevokedCertificatesComponent } from './admin/certificates/revoked-certi
 import { LoginComponent } from './admin/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AllUsersComponent } from './admin/all-users/all-users.component';
+import { MainPageComponent } from './admin/main-page/main-page.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { AllUsersComponent } from './admin/all-users/all-users.component';
     CertificateRequestsComponent,
     RevokedCertificatesComponent,
     LoginComponent,
-    AllUsersComponent
+    AllUsersComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,

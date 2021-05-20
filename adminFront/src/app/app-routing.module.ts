@@ -5,11 +5,16 @@ import { CertificateRequestsComponent } from './admin/certificates/certificate-r
 import { RevokedCertificatesComponent } from './admin/certificates/revoked-certificates/revoked-certificates.component';
 import { LoginComponent } from './admin/login/login.component';
 import { AllUsersComponent } from './admin/all-users/all-users.component';
+import { MainPageComponent } from './admin/main-page/main-page.component';
 
 
 const routes: Routes = [{
   path: '',
   component: LoginComponent
+},
+{
+  path: 'main',
+  component: MainPageComponent
 },
 {
   path: 'certificates',
