@@ -7,18 +7,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { AllCertificatesComponent } from './admin/certificates/all-certificates/all-certificates.component';
 import { CertificateRequestsComponent } from './admin/certificates/certificate-requests/certificate-requests.component';
 import { RevokedCertificatesComponent } from './admin/certificates/revoked-certificates/revoked-certificates.component';
+import { LoginComponent } from './admin/login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     AllCertificatesComponent,
     CertificateRequestsComponent,
-    RevokedCertificatesComponent
+    RevokedCertificatesComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
