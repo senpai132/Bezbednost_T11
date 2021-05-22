@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -29,6 +30,7 @@ public class CertificateController {
 
     private RevokedMapper revokedMapper = new RevokedMapper();
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CertificateDTO>> getAll() {
         List<X509Certificate> certificates = certificateService.findAllActive();
@@ -41,6 +43,8 @@ public class CertificateController {
         return "Heloo LLLLL";
     }
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/removed", method = RequestMethod.GET)
     public ResponseEntity<List<RevokedCertificateDTO>> getRemoved() {
         List<RevokedCertificate> certificates = certificateService.findAllRemoved();
@@ -48,6 +52,7 @@ public class CertificateController {
         return new ResponseEntity<>(revokedMapper.toDtoList(certificates), HttpStatus.OK);
     }
     //value="/{serialNumber}",
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> revokeCertificate(@RequestBody RevocationDTO revocationDTO) {
         certificateService.revokeCertificate(revocationDTO.getSerialNumber(), revocationDTO.getRevocationReason());

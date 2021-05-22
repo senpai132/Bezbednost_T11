@@ -2,51 +2,75 @@ package adminapi.adminaplication.model;
 
 
 import adminapi.adminaplication.model.enums.UserType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-public class User {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class User implements UserDetails {
     @Id
-    @GeneratedValue
-    private int id;
-    @Column
-    private String email;
-    @Column
-    private String password;
-    @Column
-    private UserType type;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    protected Integer id;
 
-    public User(int id, String email, String password, UserType type) {
-        this.id = id;
-        this.email = email;
+    @Column(unique = true, nullable = false)
+    protected String username;
+
+    @Column(unique = true, nullable = false)
+    protected String emailAddress;
+
+    @Column
+    protected String password;
+
+
+    @Column(name = "last_password_reset_date")
+    private Timestamp lastPasswordResetDate;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_authority",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+    private List<Authority> authorities;
+
+    public User() {}
+
+    public User(String username, String password, String emailAddress) {
+        this.username = username;
         this.password = password;
-        this.type = type;
+        this.emailAddress = emailAddress;
     }
 
-    public User(String email, String password, UserType type) {
-        this.email = email;
-        this.password = password;
-        this.type = type;
-    }
-
-    public User(){}
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
@@ -55,11 +79,57 @@ public class User {
         this.password = password;
     }
 
-    public UserType getType() {
-        return type;
+    public Timestamp getLastPasswordResetDate() {
+        return lastPasswordResetDate;
     }
 
-    public void setType(UserType type) {
-        this.type = type;
+    public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+
+    /*public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }*/
+
+    // UserDetails
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;//this.active == null ? false : this.active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
     }
 }

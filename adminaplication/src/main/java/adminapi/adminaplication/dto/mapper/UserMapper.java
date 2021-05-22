@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class UserMapper implements  MapperInterface<User, UserDTO>{
-    @Override
+public class UserMapper /*implements  MapperInterface<User, UserDTO>*/{
+    /*@Override
     public User toEntity(UserDTO dto) {
         UserType type = this.makeType(dto.getType());
         if(type == null){
@@ -56,5 +56,5 @@ public class UserMapper implements  MapperInterface<User, UserDTO>{
             userDTOS.add(this.toDto(user));
         }
         return userDTOS;
-    }
+    }*/
 }
