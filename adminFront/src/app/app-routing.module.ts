@@ -6,31 +6,44 @@ import { RevokedCertificatesComponent } from './admin/certificates/revoked-certi
 import { LoginComponent } from './admin/login/login.component';
 import { AllUsersComponent } from './admin/all-users/all-users.component';
 import { MainPageComponent } from './admin/main-page/main-page.component';
+import { RolesGuard } from './guards/roles.guard';
+import { LoginGuard } from './guards/login.guard';
 
 
 const routes: Routes = [{
   path: '',
-  component: LoginComponent
+  component: LoginComponent,
+  canActivate: [LoginGuard]
 },
 {
   path: 'main',
-  component: MainPageComponent
+  component: MainPageComponent,
+  canActivate: [RolesGuard],
+  data: { expectedRoles: 'ROLE_ADMIN' }
 },
 {
   path: 'certificates',
-  component: AllCertificatesComponent
+  component: AllCertificatesComponent,
+  canActivate: [RolesGuard],
+  data: { expectedRoles: 'ROLE_ADMIN' }
 },
 {
   path: 'requests',
-  component: CertificateRequestsComponent
+  component: CertificateRequestsComponent,
+  canActivate: [RolesGuard],
+  data: { expectedRoles: 'ROLE_ADMIN' }
 },
 {
   path: 'revoked',
-  component: RevokedCertificatesComponent
+  component: RevokedCertificatesComponent,
+  canActivate: [RolesGuard],
+  data: { expectedRoles: 'ROLE_ADMIN' }
 },
 {
   path: 'users',
-  component: AllUsersComponent
+  component: AllUsersComponent,
+  canActivate: [RolesGuard],
+  data: { expectedRoles: 'ROLE_ADMIN' }
 }];
 
 @NgModule({
