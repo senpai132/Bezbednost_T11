@@ -9,7 +9,7 @@ import { CertificateRequest } from '../model/certificate-request';
 })
 export class CertificateService {
 
-  private readonly port = "http://localhost:8081/api/certificate";
+  private readonly port = "https://localhost:8081/api/certificate";
   private readonly sendReq = "/signingrequest";
   private headers = new HttpHeaders({ 'Content-Type': 'application/json'});
 
