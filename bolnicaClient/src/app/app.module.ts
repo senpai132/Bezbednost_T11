@@ -10,12 +10,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoginComponent } from './bolnica/login/login.component';
 import { CertificateService } from './bolnica/services/certificate.service';
 import { TokenInterceptorService } from './bolnica/services/token-interceptor.service';
+import { MainPageComponent } from './bolnica/main-page/main-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddCertificateComponent,
-    LoginComponent
+    LoginComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,

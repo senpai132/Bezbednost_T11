@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
                 console.log("loggedIn = true");
                   if(loggedIn){
                     console.log("Should be logged in");
-                    this.router.navigateByUrl('/add_certificate');
+                    this.router.navigateByUrl('/main');
                   }
               },
               (err:Error) => {
