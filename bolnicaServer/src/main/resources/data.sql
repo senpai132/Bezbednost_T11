@@ -7,3 +7,7 @@ INSERT INTO admin (id, username, email_address, password) VALUES
 
 INSERT INTO doctor (id, username, email_address, password) VALUES
     (1001, 'perica', 'acanikolic021@gmail.com', '$2a$04$iLVT9N/5RKaS1bMXEmueauu7pU1ZROAxtRT0x8pAGGuQtmp9E8LH.');
+
+INSERT INTO user_authority (user_id, authority_id) VALUES
+    (1111, 1),
+    (1001, 2);
