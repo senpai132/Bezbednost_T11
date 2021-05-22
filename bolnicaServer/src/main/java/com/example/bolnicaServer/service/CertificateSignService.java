@@ -1,5 +1,6 @@
 package com.example.bolnicaServer.service;
 
+import com.example.bolnicaServer.config.RestTemplateConfiguration;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.operator.ContentSigner;
@@ -8,6 +9,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -28,8 +30,11 @@ import javax.xml.bind.DatatypeConverter;
 
 @Service
 public class CertificateSignService {
-    private String requestUrl = "http://localhost:8080/api/certificate-sign-request";
+    private String requestUrl = "https://localhost:8080/api/certificate-sign-request";
 
+
+    @Autowired
+    private RestTemplateConfiguration restTemplateConfiguration;
     public void sendRequest(CertificateSignRequestDTO csrDTO) throws IOException, OperatorCreationException {
         KeyPair pair = generateKeyPair();
 
@@ -64,7 +69,7 @@ public class CertificateSignService {
         builder.append(DatatypeConverter.printBase64Binary(csr.getEncoded()));
         builder.append("\n-----END CERTIFICATE REQUEST-----");
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
 
         HttpEntity<String> request = new HttpEntity<>(builder.toString());
 
@@ -75,6 +80,7 @@ public class CertificateSignService {
                     request,
                     String.class).getStatusCode();
         } catch (HttpClientErrorException exception) {
+            exception.printStackTrace();
             //throw new InvalidAPIResponse("Invalid API response.");
         }
     }

@@ -36,6 +36,11 @@ public class CertificateController {
         return new ResponseEntity<>(mapper.toDtoList(certificates), HttpStatus.OK);
     }
 
+    @RequestMapping(value="/dummy", method = RequestMethod.GET)
+    public String getDummy() {
+        return "Heloo LLLLL";
+    }
+
     @RequestMapping(value="/removed", method = RequestMethod.GET)
     public ResponseEntity<List<RevokedCertificateDTO>> getRemoved() {
         List<RevokedCertificate> certificates = certificateService.findAllRemoved();

@@ -34,6 +34,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -153,7 +154,7 @@ public class CertificateService {
         //Iscitava se sertifikat koji ima dati alias
         Certificate cert = keyStore.getCertificate(alias);
         //Iscitava se privatni kljuc vezan za javni kljuc koji se nalazi na sertifikatu sa datim aliasom
-        PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray());
+        PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, apiKeyStore.getKEYSTORE_PASSWORD().toCharArray());
 
         X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
         return new IssuerData(privKey, issuerName);
@@ -161,31 +162,44 @@ public class CertificateService {
 
     public X509Certificate createCertificate(CertificateSignRequest csr, String templateType) throws Exception {
 
-        PrivateKey issuerKey = readPrivateKey(apiKeyStore.getKEYSTORE_FILE_PATH(),
-                apiKeyStore.getKEYSTORE_PASSWORD(), "1",
-                apiKeyStore.getKEYSTORE_PASSWORD());
+        KeyPair kp = generatorService.generateKeyPair();
 
         IssuerData issuerData = loadIssuer("1");
+
         X500NameBuilder subjectName = generatorService.generateName(csr);
+
         SubjectData subjectData = generatorService.generateSubjectData(
-                certificateSignRequestService.getPublicKeyFromCSR(csr.getId()),
-                subjectName.build(), "leaf", String.valueOf(csr.getSerialNumber()));
+                kp.getPublic(), subjectName.build(), "leaf", String.valueOf(csr.getSerialNumber()));
 
-        String keyStorePath = "src\\main\\resources\\keystore\\apiKeyStore.jks";
-        char[] keyStorePass = apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray();
-
-        X509Certificate certificate = generateCertificate(subjectData, issuerData, "leaf");
+        X509Certificate certificate = generateCertificate(subjectData, issuerData, templateType);
 
         KeyStore keyStore = apiKeyStore.setUpStore();
 
+
         Certificate[] certificates = this.createChain("1", certificate);
 
-        this.writeCertificateToKeyStore(csr.getSerialNumber(), certificates,
-                issuerData.getPrivateKey());
-        this.writeCertificateToFile(keyStore, "leaf_" + csr.getCommonName(), csr.getSerialNumber(), apiKeyStore.getCertDirectory());
+        Certificate root = keyStore.getCertificate("1");
+
+        this.writeCertificateToKeyStore(csr.getSerialNumber(), new Certificate[]{certificate, root}, //ovde moze i ceritificates da stoji
+                kp.getPrivate());
+        this.writeCertificateToFile(keyStore, "leaf_" + csr.getSerialNumber(), csr.getSerialNumber(), apiKeyStore.getCertDirectory());
+
+        apiKeyStore.savePrivateKey(kp, "/key_" + csr.getSerialNumber() + ".key");
+        RSAPrivateKey priv = (RSAPrivateKey) kp.getPrivate();
+
+        this.writePemFile(priv, "RSA PRIVATE KEY", "/angular_key_" + csr.getSerialNumber() + ".key");
+
         return certificate;
     }
 
+    private void writePemFile(Key key, String description, String filename)
+            throws FileNotFoundException, IOException {
+        File file = new File(apiKeyStore.getCertDirectory() + filename);
+        JcaPEMWriter writer = new JcaPEMWriter(new PrintWriter(file));
+        writer.writeObject(key);
+        writer.close();
+
+    }
 
     private Certificate[] createChain(String issuerAlias,Certificate certificate){
         Certificate[] certificatesChainIssuer = this.getCertificateChainByAlias(issuerAlias);
@@ -214,10 +228,10 @@ public class CertificateService {
 
     private void  writeCertificateToKeyStore(String alias, Certificate[] certificates, PrivateKey pk) throws Exception{
         apiKeyStore.setUpStore().setKeyEntry(alias, pk,
-                apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray(), certificates);
+                apiKeyStore.getKEYSTORE_PASSWORD().toCharArray(), certificates);
 
         apiKeyStore.setUpStore().store(new FileOutputStream(apiKeyStore.getKEYSTORE_FILE_PATH()),
-                apiKeyStore.getKEYSTORE_PASSWORD().toString().toCharArray());
+                apiKeyStore.getKEYSTORE_PASSWORD().toCharArray());
     }
 
 

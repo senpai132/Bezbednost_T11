@@ -37,6 +37,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         // TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
         web.ignoring().antMatchers(HttpMethod.POST, "/api/certificate/signingrequest");
-        //web.ignoring().antMatchers("/api/certificate/**");
+        web.ignoring().antMatchers("/api/certificate/**");
     }
 }
