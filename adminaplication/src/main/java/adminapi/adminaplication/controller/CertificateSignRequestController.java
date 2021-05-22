@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class CertificateSignRequestController {
 
     private CertificateSignRequestMapper mapper = new CertificateSignRequestMapper();
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CertificateSignRequestDTO>> getAllPendingRequests() {
         List<CertificateSignRequest> certificateSignRequestList = certificateSignRequestService.findAllPendingRequest();
@@ -34,6 +36,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(mapper.toDtoList(certificateSignRequestList), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
         CertificateSignRequest certificateSignRequest = null;
@@ -47,6 +50,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(mapper.toDto(certificateSignRequest), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/accept/{id}", method=RequestMethod.PUT)
     public ResponseEntity<?> acceptSignRequest(@PathVariable Long id){
 
@@ -60,6 +64,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/decline/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> declineSignRequest(@PathVariable Long id){
 
