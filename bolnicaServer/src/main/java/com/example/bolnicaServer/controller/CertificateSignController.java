@@ -27,4 +27,9 @@ public class CertificateSignController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    @RequestMapping(value="/dummy", method = RequestMethod.GET)
+    public String getDummy() {
+        return "Heloo HOSPITAL";
+    }
 }

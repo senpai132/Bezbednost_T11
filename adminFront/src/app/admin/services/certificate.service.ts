@@ -12,7 +12,7 @@ import { RevokedCertificate } from '../model/revoked-certificate';
 })
 export class CertificateService {
 
-  private readonly port = "http://localhost:8080/api";
+  private readonly port = "https://localhost:8080/api";
   private readonly request = "/certificate-sign-request";
   private readonly path = "/certificate";
   private readonly acceptReq = "/accept/";
