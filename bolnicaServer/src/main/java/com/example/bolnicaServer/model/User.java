@@ -1,7 +1,5 @@
-package adminapi.adminaplication.model;
+package com.example.bolnicaServer.model;
 
-
-import adminapi.adminaplication.model.enums.UserType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

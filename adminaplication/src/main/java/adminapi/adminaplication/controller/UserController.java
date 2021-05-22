@@ -25,7 +25,7 @@ public class UserController {
     private UserMapper mapper = new UserMapper();
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    /*@RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.allUsers();
 
@@ -63,6 +63,6 @@ public class UserController {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
+    }*/
 
 }

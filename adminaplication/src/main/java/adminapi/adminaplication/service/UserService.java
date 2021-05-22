@@ -14,20 +14,28 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void createUser(User user) throws Exception{
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public User getUserById(Integer id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    /*public void createUser(User user) throws Exception{
         if(user == null){
             throw new Exception("Bad input");
         }
-        User oldUser = userRepository.findByEmail(user.getEmail()).orElse(null);
+        User oldUser = userRepository.findByEmail(user.getEmailAddress());
         if(oldUser != null){
             throw new Exception("User with given email already exists");
         }
 
         userRepository.save(user);
-    }
+    }*/
 
-    public void changeUserType(UserType type, String email) throws Exception{
-        User user = userRepository.findByEmail(email).orElse(null);
+    /*public void changeUserType(UserType type, String email) throws Exception{
+        User user = userRepository.findByEmail(email).;
 
         if(type == null){
             throw  new Exception("Bad type");
@@ -42,14 +50,14 @@ public class UserService {
 
         user.setType(type);
         userRepository.save(user);
-    }
+    }*/
 
     public List<User> allUsers(){
         return userRepository.findAll();
     }
 
-    public void deleteUser(String email) throws Exception{
-        User user = userRepository.findByEmail(email).orElse(null);
+    /*public void deleteUser(String email) throws Exception{
+        User user = userRepository.findByEmail(email);
 
         if(user == null){
             throw new Exception("User not found");
@@ -59,5 +67,5 @@ public class UserService {
         }
 
         userRepository.delete(user);
-    }
+    }*/
 }
