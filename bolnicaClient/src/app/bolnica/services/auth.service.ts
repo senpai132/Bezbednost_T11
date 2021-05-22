@@ -38,7 +38,7 @@ export class AuthService {
 
   login(username: string, password: string): Observable<boolean> {
     // const params:HttpParams = new HttpParams().set('entry',entryText);
-    return this.http.post('http://localhost:8081/auth/login', JSON.stringify({ username, password }),
+    return this.http.post('https://localhost:8081/auth/login', JSON.stringify({ username, password }),
       { headers: this.headers, responseType: 'json' }).pipe(
         map((res: any) => {
           const token = res && res.accessToken;
@@ -72,7 +72,7 @@ export class AuthService {
   }
 
   refreshToken(): Observable<boolean> {
-    return this.http.post('http://localhost:8081/auth/refresh', {}).pipe(
+    return this.http.post('https://localhost:8081/auth/refresh', {}).pipe(
       map((res: any) => {
         const token = res && res.accessToken;
 
