@@ -36,7 +36,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(mapper.toDtoList(certificateSignRequestList), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
         CertificateSignRequest certificateSignRequest = null;

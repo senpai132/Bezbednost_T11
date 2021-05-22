@@ -1,5 +1,7 @@
 package com.example.bolnicaServer.controller;
 
+import com.example.bolnicaServer.config.RestTemplateConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -28,16 +30,18 @@ public class DummyController {
     public String testDoctor() {
         return "Doktor pristupa";
     }
+    @Autowired
+    private RestTemplateConfiguration restTemplateConfiguration;
 
     @GetMapping("/device")
     public String deviceTest() {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
 
         try {
             //ResponseEntity<String> response
             //        = restTemplate.getForEntity("http://localhost:8082/dummy/device", String.class);
             //return response.toString();
-            String result = restTemplate.getForObject("http://localhost:8082/dummy/device", String.class);
+            String result = restTemplate.getForObject("https://localhost:8082/dummy/device", String.class);
             return result;
         } catch (HttpClientErrorException exception) {
             //throw new InvalidAPIResponse("Invalid API response.");
