@@ -108,7 +108,7 @@ public class ApiKeyStore {
         IssuerData issuerData =
                 generatorService.generateIssuerData(issuerPrivateKey, issuerBuilder.build());
 
-
+        //OVDE DODAJ ONO ZA NAME KOD SUBJECTDATA
         SubjectData subjectData = generatorService.generateSubjectData
                 (kp.getPublic(), builder.build(), "leaf", "2");
 

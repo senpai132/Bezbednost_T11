@@ -6,10 +6,7 @@ import adminapi.adminaplication.model.SubjectData;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -56,12 +53,21 @@ public class GeneratorService {
             endDate = generateDate(12);
         }
 
+        GeneralName[] subjectAltNames = new GeneralName[]{
+                new GeneralName(GeneralName.dNSName, "localhost")
+        };
+
+        /*Extension[] extensions = new Extension[] {
+                Extension.create(Extension.subjectAlternativeName, true, new GeneralNames(subjectAltNames))
+        };*/
+
         return new SubjectData(
                 publicKey,
                 name,
                 serialNum,
                 new Date(),
-                endDate
+                endDate,
+                new GeneralNames(subjectAltNames)
         );
     }
 

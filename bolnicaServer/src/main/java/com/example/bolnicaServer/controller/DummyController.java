@@ -43,7 +43,7 @@ public class DummyController {
             //return response.toString();
             String result = restTemplate.getForObject("https://localhost:8082/dummy/device", String.class);
             return result;
-        } catch (HttpClientErrorException exception) {
+        } catch (Exception exception) { //HttpClientErrorException
             //throw new InvalidAPIResponse("Invalid API response.");
             return "Fail";
         }

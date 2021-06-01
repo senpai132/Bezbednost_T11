@@ -1,6 +1,7 @@
 package adminapi.adminaplication.model;
 
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.GeneralNames;
 
 import java.security.PublicKey;
 import java.util.Date;
@@ -11,17 +12,27 @@ public class SubjectData {
     private String serialNumber;
     private Date startDate;
     private Date endDate;
+    private GeneralNames generalNames;
 
     public SubjectData() {
 
     }
 
-    public SubjectData(PublicKey publicKey, X500Name x500name, String serialNumber, Date startDate, Date endDate) {
+    public SubjectData(PublicKey publicKey, X500Name x500name, String serialNumber, Date startDate, Date endDate, GeneralNames generalNames) {
         this.publicKey = publicKey;
         this.x500name = x500name;
         this.serialNumber = serialNumber;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.generalNames = generalNames;
+    }
+
+    public GeneralNames getGeneralNames() {
+        return generalNames;
+    }
+
+    public void setGeneralNames(GeneralNames generalNames) {
+        this.generalNames = generalNames;
     }
 
     public X500Name getX500name() {

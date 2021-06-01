@@ -176,7 +176,7 @@ public class CertificateService {
         KeyStore keyStore = apiKeyStore.setUpStore();
 
 
-        Certificate[] certificates = this.createChain("1", certificate);
+        //Certificate[] certificates = this.createChain("1", certificate);
 
         Certificate root = keyStore.getCertificate("1");
 
@@ -254,7 +254,9 @@ public class CertificateService {
                     subjectData.getX500name(),
                     subjectData.getPublicKey());
 
-            if(templateTypes == "root") {
+            certGen.addExtension(Extension.subjectAlternativeName, true,
+                    subjectData.getGeneralNames());
+            if(templateTypes.equals("root")) {
                 certGen.addExtension(Extension.keyUsage, false,
                         new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign));
 
