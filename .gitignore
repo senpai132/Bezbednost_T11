@@ -4,3 +4,5 @@ adminaplication/src/main/resources/keystore/apiKeyStore.jks
 *.crt
 *.key
 *.jks
+bolnicaClient/ssl
+adminFront/ssl
