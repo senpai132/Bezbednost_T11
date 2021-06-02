@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { Certificate } from '../../model/certificate';
 import { CertificateService } from '../../services/certificate.service';
 
@@ -20,6 +22,8 @@ export class AllCertificatesComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private CertificateService: CertificateService,
+    private router: Router,
+    private toastr: ToastrService
     ) {
       this.revReason = '';
      }
@@ -38,7 +42,7 @@ export class AllCertificatesComponent implements OnInit {
 
   open(content) {
     this.modalService.open(content,
-   {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+   {ariaLabelledBy: "modal-basic-title"}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = 
@@ -73,7 +77,7 @@ export class AllCertificatesComponent implements OnInit {
 
   save(){
     if (this.revReason.trim() == ""){
-      alert("Reason must be given!");
+      this.toastr.warning("Reason for revocation must be given!", "Error!");
     }
     else{
       console.log("revoked reason: "+this.revReason);
@@ -84,7 +88,7 @@ export class AllCertificatesComponent implements OnInit {
       }).subscribe(
       res => {
         console.log("Certificate revoked");
-        this.ngOnInit();
+        this.router.navigateByUrl('/revoked');
       }, err => {
         console.log("Certificate revocation failed");
       }
