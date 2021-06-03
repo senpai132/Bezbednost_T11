@@ -50,11 +50,11 @@ export class AllUsersComponent implements OnInit {
   }
 
   remove(id): void{
-    this.toastr.info("Should delete user");
+    this.toastr.info("Should delete user", "Info");
   }
 
   changeRole(id): void{
-    this.toastr.info("Should change role");
+    this.toastr.info("Should change role", "Info");
   }
 
   addUser(): void{
@@ -68,14 +68,14 @@ export class AllUsersComponent implements OnInit {
 
   save(): void{
     if (this.username.trim() == "" || this.password.trim() == ""){
-      this.toastr.warning("Both username and password are required");
+      this.toastr.warning("Both username and password are required", "Warning");
     }
     else if (!this.validateEmail(this.username)){
-      this.toastr.error("Email not valid!");
+      this.toastr.error("Email not valid!", "Error");
     }
     else{
       this.modalService.dismissAll();
-      this.toastr.info("Should add user");
+      this.toastr.info("Should add user", "Info");
     }
   }
 

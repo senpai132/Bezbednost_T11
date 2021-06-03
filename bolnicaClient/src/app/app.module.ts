@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,6 +12,7 @@ import { LoginComponent } from './bolnica/login/login.component';
 import { CertificateService } from './bolnica/services/certificate.service';
 import { TokenInterceptorService } from './bolnica/services/token-interceptor.service';
 import { MainPageComponent } from './bolnica/main-page/main-page.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { MainPageComponent } from './bolnica/main-page/main-page.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     CertificateService,

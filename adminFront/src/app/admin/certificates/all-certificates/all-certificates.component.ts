@@ -77,7 +77,7 @@ export class AllCertificatesComponent implements OnInit {
 
   save(){
     if (this.revReason.trim() == ""){
-      this.toastr.warning("Reason for revocation must be given!", "Error!");
+      this.toastr.warning("Reason for revocation must be given!", "Warning");
     }
     else{
       console.log("revoked reason: "+this.revReason);
