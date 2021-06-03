@@ -31,3 +31,50 @@
         </tr>
     </table>
 </div>
+
+<ng-template id="popup" #type let-modal>
+    <div class="popup">
+        <div class="popup-inner">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">
+                    Confirm acceptance
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="acceptType">
+                            Certificate type:
+                    </label>
+                        <div class="input-group">
+                            <!-- <mat-radio-group id="acceptType" class="form-control" [value]="acceptType" (input)="acceptType = $event.target.value" aria-label="Select an option">
+                                <mat-radio-button value="1">leaf</mat-radio-button>
+                                <mat-radio-button value="2">device</mat-radio-button>
+                            </mat-radio-group> -->
+                            <form [formGroup]="form">
+                                <label>
+                                  <input type="checkbox" value="leaf" formControlName="leaf">
+                                    <span>leaf</span>
+                                </label>
+                                <label>
+                                  <input type="checkbox" value="device" formControlName="device">
+                                    <span>device</span>
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="confirm()">
+                    Save
+                </button>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">
+                        Cancel
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
