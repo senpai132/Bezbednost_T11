@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { User } from '../model/user';
 
 @Component({
@@ -20,7 +21,8 @@ export class AllUsersComponent implements OnInit {
   role: String;
 
   constructor(
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private toastr: ToastrService
   ) {
     this.username = "";
     this.password = "";
@@ -48,11 +50,11 @@ export class AllUsersComponent implements OnInit {
   }
 
   remove(id): void{
-    alert("Should change role");
+    this.toastr.info("Should delete user", "Info");
   }
 
   changeRole(id): void{
-    alert("Should delete user");
+    this.toastr.info("Should change role", "Info");
   }
 
   addUser(): void{
@@ -66,14 +68,14 @@ export class AllUsersComponent implements OnInit {
 
   save(): void{
     if (this.username.trim() == "" || this.password.trim() == ""){
-      alert("Both username and password are required");
+      this.toastr.warning("Both username and password are required", "Warning");
     }
     else if (!this.validateEmail(this.username)){
-      alert("Email not valid!");
+      this.toastr.error("Email not valid!", "Error");
     }
     else{
       this.modalService.dismissAll();
-      alert("Should add user");
+      this.toastr.info("Should add user", "Info");
     }
   }
 

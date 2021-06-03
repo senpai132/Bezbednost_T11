@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CertificateRequest } from '../../model/certificate-request';
 import { CertificateService } from '../../services/certificate.service';
 
@@ -13,6 +14,7 @@ export class CertificateRequestsComponent implements OnInit {
 
   constructor(
     private CertificateService: CertificateService,
+    private router: Router
     ) {
   }
 
@@ -30,7 +32,7 @@ export class CertificateRequestsComponent implements OnInit {
 
   accept(id){
     this.CertificateService.acceptRequest(id).subscribe(res => {
-      this.saveChange();
+      this.router.navigateByUrl('/certificates');
     });
   }
 

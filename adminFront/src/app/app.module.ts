@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +15,7 @@ import { MainPageComponent } from './admin/main-page/main-page.component';
 import { SafeHtmlPipePipe } from './pipes/safe-html-pipe.pipe';
 import { TokenInterceptorService } from './admin/services/token-interceptor.service';
 import { CertificateService } from './admin/services/certificate.service';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { CertificateService } from './admin/services/certificate.service';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     CertificateService,
