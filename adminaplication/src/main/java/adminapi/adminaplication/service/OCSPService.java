@@ -33,8 +33,6 @@ public class OCSPService {
 
     @Autowired
     private RevokedCertificateRepository revokedCertificateRepository;
-    /*@Value("${application.keystore.password}")
-    private String KEYSTORE_PASSWORD;*/
 
     public OCSPResp generateOCSPResponse(OCSPReq request)
             throws Exception {
@@ -70,14 +68,12 @@ public class OCSPService {
 
         BcDigestCalculatorProvider util = new BcDigestCalculatorProvider();
 
-        // ako znam kako sam ga zbudzio
         BasicOCSPRespBuilder respBuilder = new BasicOCSPRespBuilder(
                 SubjectPublicKeyInfo.getInstance(pubKey.getEncoded()),
                 util.get(CertificateID.HASH_SHA1));
 
 
         Extensions extensions = null;
-        // vracamo samo onu nonce i tjt.
         Extension nonce_ext = request.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
         if (nonce_ext != null) {
             extensions = new Extensions(new Extension[]{ nonce_ext});

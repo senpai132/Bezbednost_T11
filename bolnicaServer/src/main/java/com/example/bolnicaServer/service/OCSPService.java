@@ -1,6 +1,7 @@
 package com.example.bolnicaServer.service;
 
 //import org.apache.http.HttpEntity;
+import com.example.bolnicaServer.config.HospitalKeyStore;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -44,32 +45,8 @@ public class OCSPService {
     @Value("${OCSPReqURL}")
     private String ocspReqURL;
 
-    @Value("application.alias")
-    private String alias;
-
-    //@Value("${mySerialNumber}")
-    //private String mySerialNumber;
-
     @Autowired
-    @Qualifier("setUpStore")
-    private KeyStore keyStore;
-
-    @Autowired
-    @Qualifier("trustStore")
-    private KeyStore myTrustStore;
-
-
-    //@Autowired
-    //private CertificateBuilder certificateBuilder;
-
-    /*@Autowired
-    private CertificateService certificateService;*/
-
-    /*@Autowired
-    private AgentConfiguration agentConfiguration;*/
-
-    /*@Autowired
-    private AuthService authService;*/
+    private HospitalKeyStore hospitalKeyStore;
 
     @Autowired
     @Qualifier("NoOCSP")
@@ -77,39 +54,32 @@ public class OCSPService {
     private RestTemplate restTemplate;
 
     public OCSPReq generateOCSPRequest(X509Certificate[] chain) throws Exception {
-
+        KeyStore keyStore = hospitalKeyStore.setUpStore();
         X509Certificate certificate = chain[0];
         X509Certificate issuerCert = chain[1];
 
         BcDigestCalculatorProvider util = new BcDigestCalculatorProvider();
 
-        // Generate the id for the certificate we are looking for
         CertificateID id = new CertificateID(util.get(  CertificateID.HASH_SHA1),
                 new X509CertificateHolder(issuerCert.getEncoded()), certificate.getSerialNumber());
 
         OCSPReqBuilder ocspGen = new OCSPReqBuilder();
         ocspGen.addRequest(id);
 
-        // nonce je vrednost koju onaj koji salje zahtev salje kako bi se stitili od replay napada.
         BigInteger nonce = BigInteger.valueOf(System.currentTimeMillis());
         Extension ext = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, true, new DEROctetString(nonce.toByteArray()));
         ocspGen.setRequestExtensions(new Extensions(new Extension[] { ext }));
 
-        // debacle privatnog kljuca i potpisivanje requesta
         Security.addProvider(new BouncyCastleProvider());
         JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
         builder = builder.setProvider("BC");
-        //JcaContentSignerBuilder builder = certificateBuilder.getBuilder();
-
-        // @TODO: Treba resiti problem kada se renewuje sertifikat jer se tada vise ne koristi
-        // KEY_PAIR_ALIAS vec onaj drugi za renew
-        PrivateKey privateKey =  (PrivateKey) keyStore.getKey("2", keyStorePassword.toCharArray());
+        PrivateKey privateKey =  (PrivateKey) keyStore.getKey(hospitalKeyStore.getAlias(), keyStorePassword.toCharArray());
         ContentSigner contentSigner = builder.build(privateKey);
 
         X500NameBuilder nameBuilder = new X500NameBuilder();
-        nameBuilder.addRDN(BCStyle.CN, "PKI"); // verovatno ide PKI //agentConfiguration.getName()
+        nameBuilder.addRDN(BCStyle.CN, "PKI");
 
-        nameBuilder.addRDN(BCStyle.UNIQUE_IDENTIFIER, "2");
+        nameBuilder.addRDN(BCStyle.UNIQUE_IDENTIFIER, hospitalKeyStore.getAlias());
         ocspGen.setRequestorName(nameBuilder.build());
 
         OCSPReq request = ocspGen.build(contentSigner, null);
@@ -139,9 +109,8 @@ public class OCSPService {
             throw new Exception("ocspResp now good overall");
         }
         BasicOCSPResp basicResponse = (BasicOCSPResp)ocspResp.getResponseObject();
-        //System.out.println("ALISSASA");
 
-        X509Certificate rootCA = (X509Certificate) myTrustStore.getCertificate("root");
+        X509Certificate rootCA = (X509Certificate) hospitalKeyStore.getTruststore().getCertificate("root");
 
         ContentVerifierProvider prov = new JcaContentVerifierProviderBuilder().build(rootCA.getPublicKey());
         boolean signatureValid = basicResponse.isSignatureValid(prov);
@@ -150,7 +119,6 @@ public class OCSPService {
             throw new Exception("ocspResp signature corupted");
         }
 
-        // CHECK nonce Extension to prevent replay attack
         byte[] reqNonce = ocspReq.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce).getEncoded();
         byte[] respNonce = basicResponse.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce).getEncoded();
 
