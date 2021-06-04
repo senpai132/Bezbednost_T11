@@ -32,7 +32,7 @@ public class DeviceKeyStore {
     @Value("${application.my.key}")
     private String myKey;
 
-    @Value("${application.cert.alias}")
+    @Value("${application.alias}")
     private String alias;
 
     @Value("${application.truststore.password}")
@@ -60,7 +60,7 @@ public class DeviceKeyStore {
                 is = new FileInputStream(certDirectory + "/root.crt");
                 X509Certificate root = (X509Certificate) fac.generateCertificate(is);
                 keyStore.setKeyEntry(alias, loadKey(),
-                        KEYSTORE_PASSWORD.toCharArray(), new Certificate[]{cert});
+                        KEYSTORE_PASSWORD.toCharArray(), new Certificate[]{cert, root});
 
                 keyStore.store(new FileOutputStream(KEYSTORE_FILE_PATH), KEYSTORE_PASSWORD.toCharArray());
             }

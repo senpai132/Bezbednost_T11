@@ -68,6 +68,9 @@ public class ApiKeyStore {
                 keyStore.load(null, KEYSTORE_PASSWORD.toCharArray());
                 trustStore.load(null, TRUSTSTORE_PASSWORD.toCharArray());
 
+                /*keyStore.load(new FileInputStream(f), KEYSTORE_PASSWORD.toCharArray());
+
+                X509Certificate rootCert = (X509Certificate) keyStore.getCertificate("1");*/
                 X509Certificate rootCert = generateRoot(keyStore);
 
                 certificateService.writeCertificateToFile(keyStore,

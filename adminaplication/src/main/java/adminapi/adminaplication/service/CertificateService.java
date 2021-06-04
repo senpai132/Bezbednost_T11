@@ -25,9 +25,15 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
+import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
@@ -53,6 +59,9 @@ public class CertificateService {
     private RevokedCertificateRepository revokedCertificateRepository;
 
     @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
     private CertificateSignRequestService certificateSignRequestService;
 
     public List<X509Certificate> findAllActive() {
@@ -63,6 +72,7 @@ public class CertificateService {
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
                 String alias = aliases.nextElement();
+                //System.out.println("VRTI U KRUG");
                 String serialNumber = alias.replaceAll("^0", "");
                 if(!revokedCertificateRepository.findBySerialNumber(serialNumber).isPresent())
                     certificates.add(readCertificate(alias));
@@ -117,17 +127,8 @@ public class CertificateService {
         revokedCertificateRepository.save(revokedCertificate);
     }
 
-    /*public void revokeCertificate(RevokedCertificate revokedCertificate) {
-        Date revocationDate = new Date();
-        //RevokedCertificate revokedCertificate = new RevokedCertificate(serialNumber.toString(), revocationDate, reason);
-        revokedCertificate.setRevocationDate(revocationDate);
-        revokedCertificateRepository.save(revokedCertificate);
-    }*/
-
     public void writeCertificateToFile(KeyStore keyStore, String name, String alias, String certDirectory) throws Exception {
         java.security.cert.Certificate[] chain = keyStore.getCertificateChain(alias);
-        //Enumeration<String> enumeration = keyStore.aliases();
-        //System.out.println(chain.length);
         StringWriter stringWriter = new StringWriter();
         JcaPEMWriter pm = new JcaPEMWriter(stringWriter);
         if(chain != null){
@@ -151,9 +152,7 @@ public class CertificateService {
     public IssuerData loadIssuer(String alias) throws KeyStoreException, CertificateException, NoSuchAlgorithmException,
             UnrecoverableKeyException {
         KeyStore keyStore = apiKeyStore.setUpStore();
-        //Iscitava se sertifikat koji ima dati alias
         Certificate cert = keyStore.getCertificate(alias);
-        //Iscitava se privatni kljuc vezan za javni kljuc koji se nalazi na sertifikatu sa datim aliasom
         PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, apiKeyStore.getKEYSTORE_PASSWORD().toCharArray());
 
         X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
@@ -169,7 +168,7 @@ public class CertificateService {
         X500NameBuilder subjectName = generatorService.generateName(csr);
 
         SubjectData subjectData = generatorService.generateSubjectData(
-                kp.getPublic(), subjectName.build(), "leaf", String.valueOf(csr.getSerialNumber()));
+                kp.getPublic(), subjectName.build(), templateType, String.valueOf(csr.getSerialNumber()));
 
         X509Certificate certificate = generateCertificate(subjectData, issuerData, templateType);
 
@@ -182,14 +181,48 @@ public class CertificateService {
 
         this.writeCertificateToKeyStore(csr.getSerialNumber(), new Certificate[]{certificate, root}, //ovde moze i ceritificates da stoji
                 kp.getPrivate());
-        this.writeCertificateToFile(keyStore, "leaf_" + csr.getSerialNumber(), csr.getSerialNumber(), apiKeyStore.getCertDirectory());
+        this.writeCertificateToFile(keyStore, templateType + "_" + csr.getSerialNumber(), csr.getSerialNumber(), apiKeyStore.getCertDirectory());
 
         apiKeyStore.savePrivateKey(kp, "/key_" + csr.getSerialNumber() + ".key");
         RSAPrivateKey priv = (RSAPrivateKey) kp.getPrivate();
 
         this.writePemFile(priv, "RSA PRIVATE KEY", "/angular_key_" + csr.getSerialNumber() + ".key");
 
+        String crtName = templateType + "_" + csr.getSerialNumber() + ".crt";
+        String frontKey = "angular_key_" + csr.getSerialNumber() + ".key";
+        String backKey = "key_" + csr.getSerialNumber() + ".key";
+        this.sendCertificate("tehnodo98@gmail.com", crtName, backKey, frontKey); // ovde pravo vrednost je csr.getEmail()
         return certificate;
+    }
+
+    private void sendCertificate(String email, String  certName, String backKey, String frontKey)
+            throws HttpClientErrorException, IOException {
+
+        MimeMessage message = mailSender.createMimeMessage();
+
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            //helper.setFrom("noreply@baeldung.com");
+            helper.setTo(email);
+            helper.setSubject("Digital certificate");
+            helper.setText("Certificate sent");
+
+            FileSystemResource file
+                    = new FileSystemResource(new File(apiKeyStore.getCertDirectory() + "/" + certName));
+            helper.addAttachment(certName, file);
+            FileSystemResource fileKey
+                    = new FileSystemResource(new File(apiKeyStore.getCertDirectory() + "/" + frontKey));
+            helper.addAttachment(frontKey, fileKey);
+
+            FileSystemResource fileBackKey
+                    = new FileSystemResource(new File(apiKeyStore.getCertDirectory() + "/" + backKey));
+            helper.addAttachment(backKey, fileBackKey);
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void writePemFile(Key key, String description, String filename)
