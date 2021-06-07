@@ -1,6 +1,5 @@
 package com.example.bolnicaServer.controller;
 
-import com.example.bolnicaServer.dto.CertificateSignRequestDTO;
 import com.example.bolnicaServer.dto.request.RevocationDTO;
 import com.example.bolnicaServer.service.CertificateRevocationService;
 import org.bouncycastle.operator.OperatorCreationException;
