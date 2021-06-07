@@ -53,12 +53,16 @@
                             </mat-radio-group> -->
                             <form [formGroup]="form">
                                 <label>
-                                  <input type="checkbox" value="leaf" formControlName="leaf">
+                                  <input type="radio" value="leaf" formControlName="acceptType">
                                     <span>leaf</span>
                                 </label>
                                 <label>
-                                  <input type="checkbox" value="device" formControlName="device">
+                                  <input type="radio" value="device" formControlName="acceptType">
                                     <span>device</span>
+                                </label>
+                                <label>
+                                    <input type="radio" value="root" formControlName="acceptType">
+                                      <span>root</span>
                                 </label>
                             </form>
                         </div>
