@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {CertificateRequest} from '../model/certificate-request';
+import { ToastrService } from 'ngx-toastr';
 import { CertificateService } from '../services/certificate.service';
 
 @Component({
@@ -19,7 +19,10 @@ export class AddCertificateComponent implements OnInit {
   locality: string;
   serialNumber: string;
 
-  constructor(private service: CertificateService) { 
+  constructor(
+    private service: CertificateService,
+    private toastr: ToastrService
+    ) { 
     this.commonName = "";
     this.lastName = "";
     this.firstName = "";
@@ -71,13 +74,13 @@ export class AddCertificateComponent implements OnInit {
 
   addRequest(){
     if (this.someEmpty()){
-      alert("Some fields remain empty!");
+      this.toastr.warning("Some fields remain empty!", "Warning");
     }
     else if (!this.validateEmail(this.email)){
-      alert("Email is not valid!");
+      this.toastr.error("Email is not valid!", "Error");
     }
     else if (!/^\d+$/.test(this.serialNumber)){
-      alert("Serial number can only contain digits")
+      this.toastr.error("Serial number can only contain digits", "Error")
     }
     else{
       this.service.sendRequest({
@@ -92,10 +95,10 @@ export class AddCertificateComponent implements OnInit {
         "serialNumber": this.serialNumber
       }).subscribe(res => {
         console.log("response: " + res);
-        alert("Certificate request sent");
+        this.toastr.success("Certificate request sent", "Success");
       }, err => {
         console.log(err);
-        alert("Something went wrong!");
+        this.toastr.error("Something went wrong!", "Server error");
       });
     }
   }

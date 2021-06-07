@@ -47,10 +47,13 @@ public class GeneratorService {
     public SubjectData generateSubjectData(PublicKey publicKey, X500Name name, String templateType, String serialNum) {
         Date endDate;
 
-        if (templateType == "root") {
+        if (templateType.equals("root")) {
             endDate = generateDate(24);
-        } else {
+        } else if (templateType.equals("leaf")) {
             endDate = generateDate(12);
+        }
+        else {
+            endDate = generateDate(6);
         }
 
         GeneralName[] subjectAltNames = new GeneralName[]{

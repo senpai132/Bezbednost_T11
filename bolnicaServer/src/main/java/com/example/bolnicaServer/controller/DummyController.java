@@ -35,7 +35,7 @@ public class DummyController {
 
     @GetMapping("/device")
     public String deviceTest() {
-        RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
+        RestTemplate restTemplate = restTemplateConfiguration.getOCSPRestTemplate();//.getRestTemplate();//new RestTemplate();
 
         try {
             //ResponseEntity<String> response

@@ -36,6 +36,13 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(mapper.toDtoList(certificateSignRequestList), HttpStatus.OK);
     }
 
+    @RequestMapping(value="/confirm/{id}", method = RequestMethod.GET)
+    public String confirmRequest(@PathVariable Long id) {
+
+        certificateSignRequestService.confirmCertificateRequest(id);
+        return "Certificate creation request confirmed";
+    }
+
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
@@ -55,9 +62,9 @@ public class CertificateSignRequestController {
     public ResponseEntity<?> acceptSignRequest(@PathVariable Long id){
 
         CertificateSignRequest certificateSignRequest = certificateSignRequestService.acceptRequest(id);
-
+        String template = "leaf";
         try {
-            certificateService.createCertificate(certificateSignRequest, "leaf");
+            certificateService.createCertificate(certificateSignRequest, template);
         } catch (Exception e) {
             e.printStackTrace();
         }

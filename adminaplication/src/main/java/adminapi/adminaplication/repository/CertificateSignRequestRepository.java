@@ -10,4 +10,5 @@ import java.util.List;
 public interface CertificateSignRequestRepository extends JpaRepository<CertificateSignRequest, Integer> {
     List<CertificateSignRequest> findByStatus(int status);
     CertificateSignRequest findById(Long id);
+    CertificateSignRequest findBySerialNumber(String SerialNumber);
 }

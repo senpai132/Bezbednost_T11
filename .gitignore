@@ -6,3 +6,9 @@ adminaplication/src/main/resources/keystore/apiKeyStore.jks
 *.jks
 bolnicaClient/ssl
 adminFront/ssl
+adminaplication/src/main/resources/certificates
+adminaplication/src/main/resources/keystore
+bolnicaServer/src/main/resources/keystore
+bolnicaServer/src/main/resources/ssl
+devices/dummy_device/src/main/resources/keystore
+devices/dummy_device/src/main/resources/ssl
