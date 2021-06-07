@@ -1,4 +1,4 @@
-package com.example.bolnicaServer.dto;
+package com.example.bolnicaServer.dto.request;
 
 public class CertificateSignRequestDTO {
     private Long id;

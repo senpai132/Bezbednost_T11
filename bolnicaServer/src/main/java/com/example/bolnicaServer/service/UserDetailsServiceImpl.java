@@ -49,4 +49,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         VerificationToken myToken = new VerificationToken(token, user);
         return tokenRepository.save(myToken);
     }
+
 }
