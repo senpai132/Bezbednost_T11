@@ -1,6 +1,6 @@
 package com.example.bolnicaServer.controller;
 
-import com.example.bolnicaServer.dto.CertificateSignRequestDTO;
+import com.example.bolnicaServer.dto.request.CertificateSignRequestDTO;
 import com.example.bolnicaServer.service.CertificateSignService;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @CrossOrigin

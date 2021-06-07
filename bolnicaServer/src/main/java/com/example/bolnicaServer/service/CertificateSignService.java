@@ -1,13 +1,6 @@
 package com.example.bolnicaServer.service;
 
 import com.example.bolnicaServer.config.RestTemplateConfiguration;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.Extensions;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -15,7 +8,6 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,7 +18,7 @@ import java.security.*;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import com.example.bolnicaServer.dto.CertificateSignRequestDTO;
+import com.example.bolnicaServer.dto.request.CertificateSignRequestDTO;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
