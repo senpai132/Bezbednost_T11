@@ -18,6 +18,7 @@ export class AllUsersComponent implements OnInit {
   users: User[];
   username: String;
   password: String;
+  email: String;
   role: String;
 
   constructor(
@@ -26,6 +27,7 @@ export class AllUsersComponent implements OnInit {
   ) {
     this.username = "";
     this.password = "";
+    this.email = "";
     this.role = "DOCTOR";
   }
 
@@ -67,10 +69,10 @@ export class AllUsersComponent implements OnInit {
   } 
 
   save(): void{
-    if (this.username.trim() == "" || this.password.trim() == ""){
-      this.toastr.warning("Both username and password are required", "Warning");
+    if (this.username.trim() == "" || this.password.trim() == "" || this.email.trim() == ""){
+      this.toastr.warning("All fields are required", "Warning");
     }
-    else if (!this.validateEmail(this.username)){
+    else if (!this.validateEmail(this.email)){
       this.toastr.error("Email not valid!", "Error");
     }
     else{

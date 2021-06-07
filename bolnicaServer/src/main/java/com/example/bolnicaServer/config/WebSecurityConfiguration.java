@@ -68,7 +68,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // svim korisnicima dopusti da pristupe putanjama /auth/**, (/h2-console/** ako se koristi H2 baza)
                 .authorizeRequests().antMatchers("/auth/**").permitAll().antMatchers("/h2-console/**").permitAll()
-
+                .antMatchers("/api/doctor/**").permitAll()
                 // umesto anotacija iynad svake metode, moze i ovde da se proveravaju prava pristupa ya odredjeni URL
                 //.antMatchers(HttpMethod.GET, "/api/cultural-content-category").hasRole("ROLE_ADMIN")
 
@@ -93,6 +93,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
         //web.ignoring().antMatchers(HttpMethod.POST, "/api/certificate/signingrequest");
         web.ignoring().antMatchers("/api/certificate/dummy");
+        web.ignoring().antMatchers("/api/doctor/**");
+        web.ignoring().antMatchers("/api/admin/**");
         web.ignoring().antMatchers("/dummy/device");
 
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");

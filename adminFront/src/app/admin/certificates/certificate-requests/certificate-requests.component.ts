@@ -28,8 +28,7 @@ export class CertificateRequestsComponent implements OnInit {
     private router: Router
     ) {
       this.form = this.fb.group({
-        leaf: ['',Validators.required],
-        device: ['',Validators.required]
+        acceptType: ['',Validators.required]
       });
   }
 
@@ -76,7 +75,7 @@ export class CertificateRequestsComponent implements OnInit {
 
   confirm(){
     const val = this.form.value;
-    if (val.leaf == "" && val.device == ""){
+    if (val.acceptType == ""){
       this.toastr.warning("One box must be checked!", "Warning");
     }
     else{

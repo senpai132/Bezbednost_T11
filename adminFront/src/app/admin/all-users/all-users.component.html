@@ -38,6 +38,14 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
+                        <label for="email">
+                            Email:
+                        </label>
+                        <div class="input-group">
+                            <input id="email" class="form-control" [value]="email" (input)="email = $event.target.value" />
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="username">
                     Username:
                 </label>
@@ -50,7 +58,7 @@
                     Password:
                 </label>
                         <div class="input-group">
-                            <input id="password" class="form-control" [value]="password" (input)="password = $event.target.value" />
+                            <input type="password" id="password" class="form-control" [value]="password" (input)="password = $event.target.value" />
                         </div>
                     </div>
                     <div class="form-group">
