@@ -28,7 +28,7 @@ public class CertificateSignRequestController {
 
     private CertificateSignRequestMapper mapper = new CertificateSignRequestMapper();
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CertificateSignRequestDTO>> getAllPendingRequests() {
         List<CertificateSignRequest> certificateSignRequestList = certificateSignRequestService.findAllPendingRequest();
@@ -43,7 +43,7 @@ public class CertificateSignRequestController {
         return "Certificate creation request confirmed";
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
         CertificateSignRequest certificateSignRequest = null;
@@ -57,7 +57,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(mapper.toDto(certificateSignRequest), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     @RequestMapping(value="/accept/{id}", method=RequestMethod.PUT)
     public ResponseEntity<?> acceptSignRequest(@PathVariable Long id){
 
@@ -71,7 +71,7 @@ public class CertificateSignRequestController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     @RequestMapping(value="/decline/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> declineSignRequest(@PathVariable Long id){
 

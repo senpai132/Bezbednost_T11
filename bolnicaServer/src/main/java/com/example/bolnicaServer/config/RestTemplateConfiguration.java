@@ -1,5 +1,6 @@
 package com.example.bolnicaServer.config;
 
+import com.example.bolnicaServer.security.TokenUtils;
 import com.example.bolnicaServer.service.OCSPService;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -22,8 +23,13 @@ public class RestTemplateConfiguration {
     private HospitalKeyStore keyStore;
     @Autowired
     private OCSPService ocspService;
+    private String token;
 
-    @Bean(name = "NoOCSP")
+    public void setToken(String token){
+        this.token = token;
+    }
+
+    //@Bean(name = "NoOCSP")
     public RestTemplate getRestTemplate(){
         RestTemplate restTemplate = new RestTemplate();
         HttpComponentsClientHttpRequestFactory requestFactory = null;
@@ -45,7 +51,10 @@ public class RestTemplateConfiguration {
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
 
+            restTemplate.getInterceptors().add(new RestInterceptor(token));
+
             restTemplate.setRequestFactory(requestFactory);
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -77,6 +86,7 @@ public class RestTemplateConfiguration {
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
 
+            restTemplate.getInterceptors().add(new RestInterceptor(token));
             restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e){
             e.printStackTrace();

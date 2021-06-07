@@ -100,7 +100,7 @@ public class CertificateSignRequestService {
     private void sendConfirmationMail(CertificateSignRequest req){
         SimpleMailMessage message = new SimpleMailMessage();
         // message.setFrom("noreply@baeldung.com");
-        message.setTo("tehnodo98@gmail.com"); //treba da ide req.getEmail()
+        message.setTo("pombolnica@gmail.com"); //treba da ide req.getEmail()
         message.setSubject("Confirm CSR");
         String messageTemplate =
                 "<a target=\"_blank\" href=\"https://localhost:8080/api/certificate-sign-request/confirm/%d\">Confirm certificate creation request</a>";

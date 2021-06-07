@@ -19,7 +19,13 @@ import java.security.KeyStore;
 public class RestTemplateConfiguration {
     @Autowired
     private ApiKeyStore keyStore;
-    @Bean
+
+    private String token;
+
+    public void setToken(String token){
+        this.token = token;
+    }
+    //@Bean
     public RestTemplate getRestTemplate(){
         RestTemplate restTemplate = new RestTemplate();
         HttpComponentsClientHttpRequestFactory requestFactory = null;
@@ -40,6 +46,7 @@ public class RestTemplateConfiguration {
             requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
+            restTemplate.getInterceptors().add(new RestIntercepter(token));
 
             restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e){

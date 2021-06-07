@@ -1,4 +1,5 @@
 INSERT INTO authority (name) VALUES
+    ('ROLE_SUPER_ADMIN'),
     ('ROLE_ADMIN');
 
 INSERT INTO admin (id, username, email_address, password) VALUES

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -20,10 +21,11 @@ public class CertificateSignController {
     @Autowired
     private CertificateSignService certificateService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/signingrequest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendSertificateRequest(@RequestBody CertificateSignRequestDTO csr) throws IOException, OperatorCreationException {
+    public ResponseEntity<?> sendSertificateRequest(@RequestHeader("Authorization") String token, @RequestBody CertificateSignRequestDTO csr) throws IOException, OperatorCreationException {
 
-        certificateService.sendRequest(csr);
+        certificateService.sendRequest(csr, token);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

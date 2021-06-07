@@ -41,7 +41,7 @@ public class CertificateController {
     @Autowired
     private JavaMailSender mailSender;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CertificateDTO>> getAll() {
         List<X509Certificate> certificates = certificateService.findAllActive();
@@ -51,40 +51,13 @@ public class CertificateController {
 
     @RequestMapping(value="/dummy", method = RequestMethod.GET)
     public String getDummy() {
-        sendMail();
         return "Heloo LLLLL";
     }
 
-    private void sendMail(){
-        StringBuilder stringBuilder = new StringBuilder();
-
-        MimeMessage message = mailSender.createMimeMessage();
-
-
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-            //helper.setFrom("noreply@baeldung.com");
-            helper.setTo("tehnodo98@gmail.com");
-            helper.setSubject("Digital certificate");
-            helper.setText("Certificate sent");
-
-            FileSystemResource file
-                    = new FileSystemResource(new File("src/main/resources/certificates/root.crt"));
-            helper.addAttachment("Certificate", file);
-            FileSystemResource fileKey
-                    = new FileSystemResource(new File("src/main/resources/certificates/private.key"));
-            helper.addAttachment("Private Key", fileKey);
-            mailSender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     @RequestMapping(value="/removed", method = RequestMethod.GET)
     public ResponseEntity<List<RevokedCertificateDTO>> getRemoved() {
         List<RevokedCertificate> certificates = certificateService.findAllRemoved();
@@ -92,9 +65,9 @@ public class CertificateController {
         return new ResponseEntity<>(revokedMapper.toDtoList(certificates), HttpStatus.OK);
     }
     //value="/{serialNumber}",
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     @RequestMapping(method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> revokeCertificate(@RequestBody RevocationDTO revocationDTO) {
+    public ResponseEntity<?> revokeCertificate(@RequestHeader("Authorization") String token, @RequestBody RevocationDTO revocationDTO) {
         certificateService.revokeCertificate(revocationDTO.getSerialNumber(), revocationDTO.getRevocationReason());
 
         return new ResponseEntity<>(null, HttpStatus.OK);

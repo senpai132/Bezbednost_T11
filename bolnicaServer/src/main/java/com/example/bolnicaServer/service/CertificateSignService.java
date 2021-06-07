@@ -40,7 +40,7 @@ public class CertificateSignService {
 
     @Autowired
     private RestTemplateConfiguration restTemplateConfiguration;
-    public void sendRequest(CertificateSignRequestDTO csrDTO) throws IOException, OperatorCreationException {
+    public void sendRequest(CertificateSignRequestDTO csrDTO, String token) throws IOException, OperatorCreationException {
         KeyPair pair = generateKeyPair();
 
         HashMap<String, String> subjectData = new HashMap<>();
@@ -83,7 +83,8 @@ public class CertificateSignService {
         builder.append("-----BEGIN CERTIFICATE REQUEST-----\n");
         builder.append(DatatypeConverter.printBase64Binary(csr.getEncoded()));
         builder.append("\n-----END CERTIFICATE REQUEST-----");
-
+        //token = token.substring(7);
+        restTemplateConfiguration.setToken(token);
         RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
 
         HttpEntity<String> request = new HttpEntity<>(builder.toString());

@@ -191,7 +191,7 @@ public class CertificateService {
         String crtName = templateType + "_" + csr.getSerialNumber() + ".crt";
         String frontKey = "angular_key_" + csr.getSerialNumber() + ".key";
         String backKey = "key_" + csr.getSerialNumber() + ".key";
-        this.sendCertificate("tehnodo98@gmail.com", crtName, backKey, frontKey); // ovde pravo vrednost je csr.getEmail()
+        this.sendCertificate("pombolnica@gmail.com", crtName, backKey, frontKey); // ovde pravo vrednost je csr.getEmail()
         return certificate;
     }
 
