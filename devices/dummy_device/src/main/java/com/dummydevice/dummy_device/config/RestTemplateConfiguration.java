@@ -22,7 +22,7 @@ public class RestTemplateConfiguration {
 
     @Autowired
     private OCSPService ocspService;
-    @Bean(name = "NoOCSP")
+    //@Bean(name = "NoOCSP")
     public RestTemplate getRestTemplate(){
         RestTemplate restTemplate = new RestTemplate();
         HttpComponentsClientHttpRequestFactory requestFactory = null;
@@ -64,7 +64,7 @@ public class RestTemplateConfiguration {
 
             SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
                     new SSLContextBuilder()
-                            .loadTrustMaterial(null, new OCSPTrustStrategy(trustStore, ocspService, true))
+                            .loadTrustMaterial(null, new OCSPTrustStrategy(trustStore, ocspService))
                             .loadKeyMaterial(keyStore.setUpStore(), keyStore.getTRUSTSTORE_PASSWORD().toCharArray()).build(),
                     NoopHostnameVerifier.INSTANCE
             );

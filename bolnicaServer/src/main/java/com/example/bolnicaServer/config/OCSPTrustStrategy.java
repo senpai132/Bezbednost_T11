@@ -23,14 +23,14 @@ public class OCSPTrustStrategy implements TrustStrategy {
 
     private OCSPService ocspService;
 
-    private boolean doOCSP;
+    //private boolean doOCSP;
 
     public OCSPTrustStrategy(){}
 
-    public  OCSPTrustStrategy(KeyStore keyStore, OCSPService ocspService, boolean doOCSP) {
+    public  OCSPTrustStrategy(KeyStore keyStore, OCSPService ocspService) {
         this.trustStore = keyStore;
         this.ocspService = ocspService;
-        this.doOCSP = doOCSP;
+        //this.doOCSP = doOCSP;
     }
 
     @Override
@@ -62,21 +62,20 @@ public class OCSPTrustStrategy implements TrustStrategy {
             {
                 return true;
             }*/
-            if(!this.doOCSP){return true;}
-            else{
-                try {
-                    OCSPReq request = ocspService.generateOCSPRequest(x509Certificates);
-                    OCSPResp response = ocspService.sendOCSPRequest(request);
-                    boolean val = ocspService.processOCSPResponse(request,response);
-                    retVal = val;
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    retVal = false;
-                }
-                finally {
-                    return retVal;
-                }
+            //if(!this.doOCSP){return true;}
+            try {
+                OCSPReq request = ocspService.generateOCSPRequest(x509Certificates);
+                OCSPResp response = ocspService.sendOCSPRequest(request);
+                boolean val = ocspService.processOCSPResponse(request,response);
+                retVal = val;
+            }catch (Exception e) {
+                e.printStackTrace();
+                retVal = false;
             }
+            finally {
+                return retVal;
+            }
+
         }
     }
 }
