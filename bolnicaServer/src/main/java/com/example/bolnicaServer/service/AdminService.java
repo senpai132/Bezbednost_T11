@@ -5,6 +5,7 @@ import com.example.bolnicaServer.model.Admin;
 import com.example.bolnicaServer.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,6 +16,9 @@ import java.util.Map;
 public class AdminService {
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Admin getAdminByUsername(String username) {
         return adminRepository.findByUsername(username);
@@ -34,6 +38,7 @@ public class AdminService {
             throw new Exception("Admin with given email already exists");
         }
 
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         adminRepository.save(admin);
 
         return admin;
