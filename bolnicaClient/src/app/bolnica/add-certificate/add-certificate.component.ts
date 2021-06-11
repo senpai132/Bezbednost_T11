@@ -17,7 +17,6 @@ export class AddCertificateComponent implements OnInit {
   country: string;
   email: string;
   locality: string;
-  serialNumber: string;
 
   constructor(
     private service: CertificateService,
@@ -31,7 +30,6 @@ export class AddCertificateComponent implements OnInit {
     this.country = "";
     this.email = "";
     this.locality = "";
-    this.serialNumber = "";
   }
 
   ngOnInit(): void {
@@ -62,9 +60,7 @@ export class AddCertificateComponent implements OnInit {
     if (this.locality == ""){
       return true;
     }
-    if (this.serialNumber == ""){
-      return true;
-    }
+    return false;
   }
 
   validateEmail(email) {
@@ -79,9 +75,6 @@ export class AddCertificateComponent implements OnInit {
     else if (!this.validateEmail(this.email)){
       this.toastr.error("Email is not valid!", "Error");
     }
-    else if (!/^\d+$/.test(this.serialNumber)){
-      this.toastr.error("Serial number can only contain digits", "Error")
-    }
     else{
       this.service.sendRequest({
         "commonName": this.commonName,
@@ -92,7 +85,7 @@ export class AddCertificateComponent implements OnInit {
         "country": this.country,
         "email": this.email,
         "locality": this.locality,
-        "serialNumber": this.serialNumber
+        "serialNumber": ""
       }).subscribe(res => {
         console.log("response: " + res);
         this.toastr.success("Certificate request sent", "Success");

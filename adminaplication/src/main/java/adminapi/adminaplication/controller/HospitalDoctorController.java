@@ -21,7 +21,8 @@ public class HospitalDoctorController {
     private RestTemplateConfiguration restTemplateConfiguration;
 
     @PostMapping
-    public void addDoctor(@RequestBody DoctorDTO dto) {
+    public void addDoctor(@RequestHeader("Authorization") String token, @RequestBody DoctorDTO dto) {
+        restTemplateConfiguration.setToken(token);
         RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
 
         HttpEntity<DoctorDTO> request = new HttpEntity<>(dto);
@@ -40,7 +41,8 @@ public class HospitalDoctorController {
     }
 
     @GetMapping
-    public List<DoctorDTO> getAllDoctors() {
+    public List<DoctorDTO> getAllDoctors(@RequestHeader("Authorization") String token) {
+        restTemplateConfiguration.setToken(token);
         RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
         List<DoctorDTO> result = new ArrayList<DoctorDTO>();
         //HttpEntity<DoctorDTO> request = new HttpEntity<>(dto);
@@ -58,13 +60,32 @@ public class HospitalDoctorController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDocctorById(@PathVariable int id) {
+    public void deleteDoctorById(@RequestHeader("Authorization") String token, @PathVariable int id) {
+        restTemplateConfiguration.setToken(token);
         RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
         //HttpEntity<DoctorDTO> request = new HttpEntity<>(dto);
         try {
             HttpStatus httpStatus = restTemplate.exchange(
                     "https://localhost:8081/api/doctor/" + id,
                     HttpMethod.DELETE,
+                    null,
+                    String.class).getStatusCode();
+        } catch (Exception exception) { //HttpClientErrorException
+            exception.printStackTrace();
+            //return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+    }
+
+    @PutMapping("/changetoadmin/{id}")
+    public void changeToAdmin(@RequestHeader("Authorization") String token, @PathVariable int id) {
+        restTemplateConfiguration.setToken(token);
+        RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
+        //HttpEntity<AdminDTO> request = new HttpEntity<>(dto);
+        try {
+            HttpStatus httpStatus = restTemplate.exchange(
+                    "https://localhost:8081/api/rolechange/doctortoadmin/" + id,
+                    HttpMethod.PUT,
                     null,
                     String.class).getStatusCode();
         } catch (Exception exception) { //HttpClientErrorException

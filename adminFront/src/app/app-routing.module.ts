@@ -19,31 +19,31 @@ const routes: Routes = [{
   path: 'main',
   component: MainPageComponent,
   canActivate: [RolesGuard],
-  data: { expectedRoles: 'ROLE_ADMIN' }
+  data: { expectedRoles: 'ROLE_SUPER_ADMIN' }
 },
 {
   path: 'certificates',
   component: AllCertificatesComponent,
   canActivate: [RolesGuard],
-  data: { expectedRoles: 'ROLE_ADMIN' }
+  data: { expectedRoles: 'ROLE_SUPER_ADMIN' }
 },
 {
   path: 'requests',
   component: CertificateRequestsComponent,
   canActivate: [RolesGuard],
-  data: { expectedRoles: 'ROLE_ADMIN' }
+  data: { expectedRoles: 'ROLE_SUPER_ADMIN' }
 },
 {
   path: 'revoked',
   component: RevokedCertificatesComponent,
   canActivate: [RolesGuard],
-  data: { expectedRoles: 'ROLE_ADMIN' }
+  data: { expectedRoles: 'ROLE_SUPER_ADMIN' }
 },
 {
   path: 'users',
   component: AllUsersComponent,
   canActivate: [RolesGuard],
-  data: { expectedRoles: 'ROLE_ADMIN' }
+  data: { expectedRoles: 'ROLE_SUPER_ADMIN' }
 }];
 
 @NgModule({
