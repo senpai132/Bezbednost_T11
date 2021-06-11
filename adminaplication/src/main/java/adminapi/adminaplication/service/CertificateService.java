@@ -41,10 +41,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CertificateService {
@@ -159,12 +156,26 @@ public class CertificateService {
         return new IssuerData(privKey, issuerName);
     }
 
+    private String generateSerialNumber(){
+        String alias = "";
+        KeyStore keyStore = apiKeyStore.setUpStore();
+        try {
+            do {
+                Random random = new Random();
+                alias = "" + random.nextInt(100000);
+            }while (keyStore.isCertificateEntry(alias));
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+        return alias;
+    }
+
     public X509Certificate createCertificate(CertificateSignRequest csr, String templateType) throws Exception {
 
         KeyPair kp = generatorService.generateKeyPair();
 
         IssuerData issuerData = loadIssuer("1");
-
+        csr.setSerialNumber(generateSerialNumber());
         X500NameBuilder subjectName = generatorService.generateName(csr);
 
         SubjectData subjectData = generatorService.generateSubjectData(
