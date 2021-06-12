@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
+import { CertificateService } from '../services/certificate.service';
 
 @Component({
   selector: 'app-main-page',
@@ -20,7 +21,8 @@ export class MainPageComponent implements OnInit {
     private modalService: NgbModal,
     private loginService: AuthService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private CertificateService: CertificateService 
   ) {
     this.isAdmin = loginService.getRole() == "ROLE_ADMIN";
     console.log("role: "+loginService.getRole());
@@ -60,7 +62,20 @@ export class MainPageComponent implements OnInit {
       this.toastr.warning("Reason for revocation must be given!", "Warning");
     }
     else{
+      console.log("revoked reason: "+this.revReason);
       this.modalService.dismissAll();
+      this.CertificateService.revokeRequest({
+        "serialNumber": "",
+        "revocationReason": this.revReason
+      }).subscribe(
+      res => {
+        console.log(res);
+        this.toastr.info("Certificate revoked", "Info");
+      }, err => {
+        console.log(err);
+        this.toastr.error("Certificate revocation failed", "Error");
+      }
+      );
     }
   }
 
