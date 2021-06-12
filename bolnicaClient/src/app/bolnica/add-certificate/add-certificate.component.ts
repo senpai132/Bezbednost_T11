@@ -76,6 +76,7 @@ export class AddCertificateComponent implements OnInit {
       this.toastr.error("Email is not valid!", "Error");
     }
     else{
+      this.toastr.info("Certificate request sent. Please check Your email", "Info");
       this.service.sendRequest({
         "commonName": this.commonName,
         "lastName": this.lastName,
@@ -88,7 +89,6 @@ export class AddCertificateComponent implements OnInit {
         "serialNumber": ""
       }).subscribe(res => {
         console.log("response: " + res);
-        this.toastr.success("Certificate request sent", "Success");
       }, err => {
         console.log(err);
         this.toastr.error("Something went wrong!", "Server error");
