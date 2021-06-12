@@ -1,6 +1,7 @@
 package com.dummydevice.dummy_device.service;
 
 import com.dummydevice.dummy_device.config.DeviceKeyStore;
+import com.dummydevice.dummy_device.config.RestTemplateConfiguration;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -47,10 +48,12 @@ public class OCSPService {
     @Autowired
     private DeviceKeyStore deviceKeyStore;
 
-    @Autowired
+    /*@Autowired
     @Qualifier("NoOCSP")
     @Lazy
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate;*/
+
+    private RestTemplateConfiguration restTemplateConfiguration;
 
     public OCSPReq generateOCSPRequest(X509Certificate[] chain) throws Exception {
         KeyStore keyStore = deviceKeyStore.setUpStore();
@@ -92,6 +95,7 @@ public class OCSPService {
         ResponseEntity<byte[]> ocspResponse = null;
 
         try {
+            RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();
             ocspResponse = restTemplate.exchange(ocspReqURL, HttpMethod.POST, entityReq, byte[].class);
         } catch (HttpClientErrorException e) {
             System.out.println("[ERROR] You are not allowed to make CSR request");

@@ -35,12 +35,14 @@ public class DummyController {
 
     @GetMapping("/device")
     public String deviceTest() {
+        restTemplateConfiguration.setToken("tokenjevisak");
         RestTemplate restTemplate = restTemplateConfiguration.getOCSPRestTemplate();//.getRestTemplate();//new RestTemplate();
 
         try {
             //ResponseEntity<String> response
             //        = restTemplate.getForEntity("http://localhost:8082/dummy/device", String.class);
             //return response.toString();
+
             String result = restTemplate.getForObject("https://localhost:8082/dummy/device", String.class);
             return result;
         } catch (Exception exception) { //HttpClientErrorException

@@ -1,10 +1,13 @@
 package com.example.bolnicaServer.controller;
 
+import com.example.bolnicaServer.config.SessionConfig;
 import com.example.bolnicaServer.dto.request.UserLoginDTO;
 import com.example.bolnicaServer.dto.response.UserTokenStateDTO;
 import com.example.bolnicaServer.model.User;
+import com.example.bolnicaServer.model.fact.BlockingFact;
 import com.example.bolnicaServer.security.TokenUtils;
 import com.example.bolnicaServer.service.UserDetailsServiceImpl;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -35,11 +38,53 @@ public class AuthController {
     @Autowired
     ApplicationEventPublisher eventPublisher;
 
+    @Autowired
+    private SessionConfig sessionConfig;
+
+
+    private String getClientIpAddr(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenStateDTO> createAuthenticationToken(@RequestBody UserLoginDTO authenticationRequest,
-                                                                       HttpServletResponse response) {
+                                                                       HttpServletResponse response, HttpServletRequest request) {
+
+        KieSession session = sessionConfig.userLoginSession();
+        String ip = getClientIpAddr(request);
+        //String realIp = ip;
         try {
+            int ind = 0;
+            BlockingFact blockingFact = new BlockingFact();
+            session.insert(blockingFact);
+            session.insert(ip);
+            session.getAgenda().getAgendaGroup("Halt").setFocus();
+            session.getAgenda().getAgendaGroup("Block").setFocus();
+            session.fireUntilHalt();
+            System.out.println(blockingFact.isBlocked());
+            if(blockingFact.isBlocked() ){
+                /*session.getAgenda().getAgendaGroup("Halt").setFocus();
+
+                session.fireUntilHalt();*/
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                             authenticationRequest.getPassword()));
@@ -52,6 +97,20 @@ public class AuthController {
 
             return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn));
         } catch (Exception ex) {
+
+            //System.out.println(ex.getMessage());
+            /*if(ex.getMessage().equals("Blocked")){
+                session.getAgenda().getAgendaGroup("Halt").setFocus();
+
+                session.fireUntilHalt();
+
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }*/
+            session.insert(ip);
+            session.getAgenda().getAgendaGroup("Halt").setFocus();
+
+            session.getAgenda().getAgendaGroup("FailLog").setFocus();
+            session.fireUntilHalt();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }

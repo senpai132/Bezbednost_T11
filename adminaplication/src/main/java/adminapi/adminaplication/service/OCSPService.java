@@ -81,11 +81,21 @@ public class OCSPService {
         respBuilder.setResponseExtensions(extensions);
 
         Req[] requests = request.getRequestList();
-
         /*if (isRevoked(requestorCerticateSerialNumber)) {
             //respBuilder.addResponse(req.getCertID(), new RevokedStatus(new Date(), CRLReason.superseded));
             throw new Exception("request maker certificate is revoked");
         }*/
+        if (isRevoked(requestorCerticateSerialNumber)) {
+            //respBuilder.addResponse(req.getCertID(), new RevokedStatus(new Date(), CRLReason.superseded));
+            respBuilder.addResponse(requests[0].getCertID(), new UnknownStatus());
+            BasicOCSPResp resp = respBuilder.build(
+                    new JcaContentSignerBuilder("SHA256withRSA").build(responderKey),
+                    null, new Date());
+
+            OCSPRespBuilder builder = new OCSPRespBuilder();
+            return builder.build(OCSPRespBuilder.SUCCESSFUL, resp);
+        }
+
         for (Req req : requests) {
             BigInteger sn = req.getCertID().getSerialNumber();
             X509Certificate cert = (X509Certificate) apiKeyStore.setUpStore().getCertificate(sn.toString());
