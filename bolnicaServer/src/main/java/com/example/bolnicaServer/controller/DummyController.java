@@ -1,18 +1,20 @@
 package com.example.bolnicaServer.controller;
 
 import com.example.bolnicaServer.config.RestTemplateConfiguration;
+//import com.example.bolnicaServer.model.Person;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -50,4 +52,17 @@ public class DummyController {
             return "Fail";
         }
     }
+
+    /*@PostMapping(value = "/person")
+    private ResponseEntity<String> savePerson(@RequestHeader Map<String, String> headers,
+                                              @RequestBody Person body) {
+        ObjectNode response = JsonNodeFactory.instance.objectNode();
+        headers.forEach((key, value) -> response.put(key, value));
+        response.put("firstName", body.getFirstName());
+        response.put("lastName", body.getLastName());
+        response.put("age", body.getAge());
+        //response.put("param", param);
+        return new ResponseEntity<String>(response.toString(), HttpStatus.OK);
+    }*/
+
 }

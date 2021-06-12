@@ -86,6 +86,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // h2 console
         http.headers().frameOptions().disable();
 
+        http
+            .headers()
+            .xssProtection()
+            .and()
+            .contentSecurityPolicy("script-src 'self'");
+
     }
 
     @Override
@@ -96,6 +102,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //web.ignoring().antMatchers("/api/doctor/**");
         //web.ignoring().antMatchers("/api/admin/**");
         web.ignoring().antMatchers("/dummy/device");
+        //web.ignoring().antMatchers(HttpMethod.POST,"/dummy/person");
 
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/refresh");

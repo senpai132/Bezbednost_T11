@@ -86,6 +86,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // h2 console
         http.headers().frameOptions().disable();
 
+        http
+            .headers()
+            .xssProtection()
+            .and()
+            .contentSecurityPolicy("script-src 'self'");
     }
 
     @Override
