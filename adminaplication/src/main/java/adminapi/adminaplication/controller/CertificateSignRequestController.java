@@ -2,6 +2,7 @@ package adminapi.adminaplication.controller;
 
 
 import adminapi.adminaplication.dto.mapper.CertificateSignRequestMapper;
+import adminapi.adminaplication.dto.request.TemplateDTO;
 import adminapi.adminaplication.dto.response.CertificateSignRequestDTO;
 import adminapi.adminaplication.model.CertificateSignRequest;
 import adminapi.adminaplication.service.CertificateService;
@@ -47,7 +48,7 @@ public class CertificateSignRequestController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CertificateSignRequestDTO> createSignRequest(@RequestBody byte[] request) {
         CertificateSignRequest certificateSignRequest = null;
-        System.out.println("Usao");
+        System.out.println("Usao kreira sert");
         try {
             certificateSignRequest = certificateSignRequestService.createRequest(request);
         } catch (Exception e) {
@@ -59,10 +60,10 @@ public class CertificateSignRequestController {
 
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     @RequestMapping(value="/accept/{id}", method=RequestMethod.PUT)
-    public ResponseEntity<?> acceptSignRequest(@PathVariable Long id){
+    public ResponseEntity<?> acceptSignRequest(@PathVariable Long id, @RequestBody TemplateDTO dto){
 
         CertificateSignRequest certificateSignRequest = certificateSignRequestService.acceptRequest(id);
-        String template = "leaf";
+        String template = dto.getType();
         try {
             certificateService.createCertificate(certificateSignRequest, template);
         } catch (Exception e) {

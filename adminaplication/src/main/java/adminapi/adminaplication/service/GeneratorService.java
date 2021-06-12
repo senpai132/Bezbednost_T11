@@ -53,6 +53,7 @@ public class GeneratorService {
             endDate = generateDate(12);
         }
         else {
+            System.out.println("Usao kao device");
             endDate = generateDate(6);
         }
 

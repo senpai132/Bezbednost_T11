@@ -96,10 +96,12 @@ public class OCSPService {
         byte[] ocspBytes = ocspReq.getEncoded();
         HttpEntity<byte[]> entityReq = new HttpEntity<>(ocspBytes, headers);
         ResponseEntity<byte[]> ocspResponse = null;
+        //HttpEntity<OCSPReq> entityReq = new HttpEntity<>(ocspReq, headers);
 
         try {
             RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();
             ocspResponse = restTemplate.exchange(ocspReqURL, HttpMethod.POST, entityReq, byte[].class);
+            //ocspResponse = restTemplate.exchange(ocspReqURL, HttpMethod.POST, entityReq, byte[].class);
         } catch (HttpClientErrorException e) {
             System.out.println("[ERROR] You are not allowed to make CSR request");
             return null;

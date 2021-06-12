@@ -18,9 +18,10 @@ public class OCSPController {
     @Autowired
     private OCSPService service;
 
-    @PostMapping(value = "/check")
+    @PostMapping(value = "/check")//byte[] request
     public ResponseEntity<byte[]> checkIsCertificateRevoked(@RequestBody byte[] request) throws Exception{
         OCSPReq ocspReq = new OCSPReq(request);
+        System.out.println("OCPS enter");
         OCSPResp ocspResp = service.generateOCSPResponse(ocspReq);
         byte[] response = ocspResp.getEncoded();
         return new ResponseEntity<>(response, HttpStatus.OK);

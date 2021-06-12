@@ -3,6 +3,7 @@ package adminapi.adminaplication.wrapper;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 import org.owasp.esapi.ESAPI;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class XSSRequestWrapper extends HttpServletRequestWrapper {
 
@@ -36,7 +38,8 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() throws IOException {
         if (rawData == null) {
-            rawData = IOUtils.toByteArray(this.request.getReader(), String.valueOf(Charsets.UTF_8));
+            rawData = IOUtils.toByteArray(this.request.getReader(), Charsets.UTF_8);
+            //rawData = IOUtils.toByteArray(this.request.getReader());
             servletStream.stream = new ByteArrayInputStream(rawData);
         }
         return servletStream;
@@ -45,7 +48,8 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public BufferedReader getReader() throws IOException {
         if (rawData == null) {
-            rawData = IOUtils.toByteArray(this.request.getReader(), String.valueOf(Charsets.UTF_8));
+            rawData = IOUtils.toByteArray(this.request.getReader(), Charsets.UTF_8);
+            //rawData = IOUtils.toByteArray(this.request.getReader());
             servletStream.stream = new ByteArrayInputStream(rawData);
         }
         return new BufferedReader(new InputStreamReader(servletStream));
@@ -120,9 +124,23 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
         if (value == null) {
             return null;
         }
+        //System.out.println(value);
         value = ESAPI.encoder()
                 .canonicalize(value)
                 .replaceAll("\0", "");
-        return Jsoup.clean(value, Whitelist.none());
+        //System.out.println(value);
+        //value = value.replaceAll("\0", "");
+        //return Jsoup.clean(value, Whitelist.none());
+        Document document = Jsoup.parse(value);
+        document.outputSettings(new Document.OutputSettings().prettyPrint(false));//makes html() preserve linebreaks and spacing
+        document.select("br").append("\\n");
+        document.select("p").prepend("\\n\\n");
+        String s = document.html().replaceAll("\\\\n", "\n");
+
+        //System.out.println("Usao " + Jsoup.clean(s, "",Whitelist.none(), new Document.OutputSettings().prettyPrint(false)));
+
+        return Jsoup.clean(s, "",Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+        //return value;
+
     }
 }

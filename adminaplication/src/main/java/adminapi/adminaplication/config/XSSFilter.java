@@ -27,15 +27,32 @@ public class XSSFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        XSSRequestWrapper wrappedRequest = new XSSRequestWrapper((HttpServletRequest) request);
+        String url = ((HttpServletRequest) request).getRequestURL().toString();
+        System.out.println("Url: " + url);
 
-        String body = IOUtils.toString(wrappedRequest.getReader());
-        if (!StringUtils.isBlank(body)) {
-            body = XSSRequestWrapper.stripXSS(body);
-            wrappedRequest.resetInputStream(body.getBytes());
+        if(!url.equals("https://localhost:8080/api/ocsp/check")) {
+            //System.out.println("XSS usao");
+            XSSRequestWrapper wrappedRequest = new XSSRequestWrapper((HttpServletRequest) request);
+
+            String body = IOUtils.toString(wrappedRequest.getReader());
+            //System.out.println("Pre: " + body.length());
+            if (!StringUtils.isBlank(body)) {
+                //System.out.println("Ulazim ciscenje");
+                body = XSSRequestWrapper.stripXSS(body);
+                //System.out.println("Posle strip: " + body.length());
+                wrappedRequest.resetInputStream(body.getBytes()); //ovo je probelm za OCSP bytes nisu dobri
+                //System.out.println("Posle: " + body.length());
+            }
+
+            chain.doFilter(wrappedRequest, response);
+        }
+        else {
+
+            chain.doFilter(request, response);
         }
 
-        chain.doFilter(wrappedRequest, response);
+
+
     }
 
 }

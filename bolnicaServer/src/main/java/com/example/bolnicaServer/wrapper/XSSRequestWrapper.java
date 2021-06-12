@@ -36,7 +36,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() throws IOException {
         if (rawData == null) {
-            rawData = IOUtils.toByteArray(this.request.getReader(), String.valueOf(Charsets.UTF_8));
+            rawData = IOUtils.toByteArray(this.request.getReader(), Charsets.UTF_8);
             servletStream.stream = new ByteArrayInputStream(rawData);
         }
         return servletStream;
@@ -45,7 +45,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public BufferedReader getReader() throws IOException {
         if (rawData == null) {
-            rawData = IOUtils.toByteArray(this.request.getReader(), String.valueOf(Charsets.UTF_8));
+            rawData = IOUtils.toByteArray(this.request.getReader(), Charsets.UTF_8);
             servletStream.stream = new ByteArrayInputStream(rawData);
         }
         return new BufferedReader(new InputStreamReader(servletStream));
