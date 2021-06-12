@@ -71,18 +71,13 @@ public class AuthController {
         String ip = getClientIpAddr(request);
         //String realIp = ip;
         try {
-            int ind = 0;
             BlockingFact blockingFact = new BlockingFact();
             session.insert(blockingFact);
             session.insert(ip);
             session.getAgenda().getAgendaGroup("Halt").setFocus();
             session.getAgenda().getAgendaGroup("Block").setFocus();
             session.fireUntilHalt();
-            System.out.println(blockingFact.isBlocked());
             if(blockingFact.isBlocked() ){
-                /*session.getAgenda().getAgendaGroup("Halt").setFocus();
-
-                session.fireUntilHalt();*/
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             Authentication authentication = authenticationManager
@@ -98,14 +93,6 @@ public class AuthController {
             return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn));
         } catch (Exception ex) {
 
-            //System.out.println(ex.getMessage());
-            /*if(ex.getMessage().equals("Blocked")){
-                session.getAgenda().getAgendaGroup("Halt").setFocus();
-
-                session.fireUntilHalt();
-
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }*/
             session.insert(ip);
             session.getAgenda().getAgendaGroup("Halt").setFocus();
 
