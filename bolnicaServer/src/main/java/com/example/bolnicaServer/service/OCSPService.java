@@ -3,6 +3,10 @@ package com.example.bolnicaServer.service;
 //import org.apache.http.HttpEntity;
 import com.example.bolnicaServer.config.HospitalKeyStore;
 import com.example.bolnicaServer.config.RestTemplateConfiguration;
+import com.example.bolnicaServer.model.Admin;
+import com.example.bolnicaServer.model.Authority;
+import com.example.bolnicaServer.model.User;
+import com.example.bolnicaServer.security.TokenUtils;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -35,7 +39,9 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class OCSPService {
@@ -53,6 +59,8 @@ public class OCSPService {
     @Qualifier("NoOCSP")
     @Lazy
     private RestTemplate restTemplate;*/
+    @Autowired
+    private TokenUtils tokenUtils;
 
     @Autowired
     private RestTemplateConfiguration restTemplateConfiguration;
@@ -90,6 +98,21 @@ public class OCSPService {
         return request;
     }
 
+    private String generateOCSPToken(){
+        String jwt = "";
+        User user = new Admin();
+        user.setId(0);
+        user.setUsername("OCSP");
+        Authority authority = new Authority();
+        authority.setId(0L);
+        authority.setName("ROLE_OCSP");
+        List<Authority> authoritys = new ArrayList<>();
+        authoritys.add(authority);
+        //user.setAuthorities(authoritys);
+        jwt = tokenUtils.generateToken(user);
+        return "Bearer " + jwt;
+    }
+
     public OCSPResp sendOCSPRequest(OCSPReq ocspReq) throws Exception{
         HttpHeaders headers = new HttpHeaders();
 
@@ -97,8 +120,9 @@ public class OCSPService {
         HttpEntity<byte[]> entityReq = new HttpEntity<>(ocspBytes, headers);
         ResponseEntity<byte[]> ocspResponse = null;
         //HttpEntity<OCSPReq> entityReq = new HttpEntity<>(ocspReq, headers);
-
+        //System.out.println("Token " + generateOCSPToken());
         try {
+            restTemplateConfiguration.setToken(generateOCSPToken());
             RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();
             ocspResponse = restTemplate.exchange(ocspReqURL, HttpMethod.POST, entityReq, byte[].class);
             //ocspResponse = restTemplate.exchange(ocspReqURL, HttpMethod.POST, entityReq, byte[].class);
