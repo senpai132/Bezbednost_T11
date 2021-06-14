@@ -23,3 +23,6 @@ INSERT INTO patient (id, first_name, last_name, email_address, date_of_birth) VA
     (1028, 'Tesa', 'Tesanovic', 'tesa@gmail.com', '1952-12-08'),
     (1029, 'Milica', 'Milic', 'milica@gmail.com', '1984-12-08'),
     (1030, 'Jovana', 'Jovic', 'jovana@gmail.com', '2011-12-08');
+
+INSERT INTO rule_template(id, use_function, min_allowed_value, max_allowed_value, min_device_alarm, max_device_alarm) VALUES
+    (7001, 'Pritisak', 50, 200, 2, 1);

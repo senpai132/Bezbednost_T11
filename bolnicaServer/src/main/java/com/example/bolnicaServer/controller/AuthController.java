@@ -1,15 +1,20 @@
 package com.example.bolnicaServer.controller;
 
+import com.example.bolnicaServer.config.RestTemplateConfiguration;
 import com.example.bolnicaServer.config.SessionConfig;
 import com.example.bolnicaServer.dto.request.UserLoginDTO;
 import com.example.bolnicaServer.dto.response.UserTokenStateDTO;
+import com.example.bolnicaServer.model.LogEntry;
 import com.example.bolnicaServer.model.User;
 import com.example.bolnicaServer.model.fact.BlockingFact;
 import com.example.bolnicaServer.security.TokenUtils;
+import com.example.bolnicaServer.service.LogEntryService;
 import com.example.bolnicaServer.service.UserDetailsServiceImpl;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +22,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +47,12 @@ public class AuthController {
 
     @Autowired
     private SessionConfig sessionConfig;
+
+    @Autowired
+    private RestTemplateConfiguration restTemplateConfiguration;
+
+    @Autowired
+    private LogEntryService logEntryService;
 
 
     private String getClientIpAddr(HttpServletRequest request) {
@@ -78,6 +91,7 @@ public class AuthController {
             session.getAgenda().getAgendaGroup("Block").setFocus();
             session.fireUntilHalt();
             if(blockingFact.isBlocked() ){
+                //#TODO blocked log
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             Authentication authentication = authenticationManager
@@ -98,45 +112,27 @@ public class AuthController {
 
             session.getAgenda().getAgendaGroup("FailLog").setFocus();
             session.fireUntilHalt();
+            restTemplateConfiguration.setToken("1234567");
+            RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
+
+            HttpEntity<UserLoginDTO> loggerRequest = new HttpEntity<>(authenticationRequest);
+
+            try {
+                ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
+                        "http://localhost:8085/logger/auth/err",
+                        HttpMethod.POST,
+                        loggerRequest,
+                        LogEntry.class);
+
+                logEntryService.insertLog(logEntry.getBody());
+            } catch (HttpClientErrorException exception) {
+                exception.printStackTrace();
+                //throw new InvalidAPIResponse("Invalid API response.");
+            }
+
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
-    /*@PostMapping("/register")
-    public ResponseEntity<?> addUser(@Valid @RequestBody GuestDTO userRequest,
-                                     HttpServletRequest request) {
-        Guest existUser;
-        try {
-            existUser = guestService.insert(guestMapper.toEntity(userRequest));
-            if(existUser == null)
-                throw new Exception("Crash");
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(existUser,
-                    request.getLocale(), appUrl));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(guestMapper.toDto(existUser), HttpStatus.CREATED);
-    }*/
-
-    /*@GetMapping("/registrationConfirm")
-    public ResponseEntity<?> confirmRegistration(@RequestParam("token") String token) {
-
-        VerificationToken verificationToken = userDetailsService.getVerificationToken(token);
-        if (verificationToken == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        User user = verificationToken.getUser();
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        user.setActive(true);
-        userDetailsService.saveRegisteredUser(user);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }*/
 
     @PostMapping("/refresh")
     public ResponseEntity<UserTokenStateDTO> refreshAuthenticationToken(HttpServletRequest request) {

@@ -1,8 +1,20 @@
 package com.example.bolnicaServer.model;
 
 public class Device {
+
     public enum Alarm {
-        NO, OVERVALUE, UNDERVALUE, MALFUNCTION
+        NO, OVERVALUE, UNDERVALUE, MALFUNCTION;
+
+        @Override
+        public String toString() {
+            switch(this) {
+                case NO: return "NO";
+                case OVERVALUE: return "OVERVALUE";
+                case UNDERVALUE: return "UNDERVALUE";
+                case MALFUNCTION: return "MALFUNCTION";
+                default: throw new IllegalArgumentException();
+            }
+        }
     };
 
     private String name;
@@ -50,4 +62,6 @@ public class Device {
     public void setAlarm(Alarm alarm) {
         this.alarm = alarm;
     }
+
+
 }

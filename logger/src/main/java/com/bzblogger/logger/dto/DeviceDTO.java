@@ -1,6 +1,5 @@
-package com.example.bolnicaServer.dto.request;
+package com.bzblogger.logger.dto;
 
-import com.example.bolnicaServer.model.Device;
 
 public class DeviceDTO {
     private String name;
@@ -8,7 +7,7 @@ public class DeviceDTO {
     private int value;
     private String alarm;
 
-    public  DeviceDTO(){}
+    public DeviceDTO(){}
 
     public DeviceDTO(String name, String useFunction, int value) {
         this.name = name;

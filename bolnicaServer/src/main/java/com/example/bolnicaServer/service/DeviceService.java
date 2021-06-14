@@ -1,7 +1,11 @@
 package com.example.bolnicaServer.service;
 
 import com.example.bolnicaServer.BolnicaServerApplication;
+import com.example.bolnicaServer.config.RestTemplateConfiguration;
+import com.example.bolnicaServer.dto.request.DeviceDTO;
+import com.example.bolnicaServer.dto.request.UserLoginDTO;
 import com.example.bolnicaServer.model.Device;
+import com.example.bolnicaServer.model.LogEntry;
 import com.example.bolnicaServer.model.template.RuleTemplate;
 import com.example.bolnicaServer.repository.RuleRepository;
 import org.drools.template.ObjectDataCompiler;
@@ -11,7 +15,12 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,6 +31,12 @@ public class DeviceService {
 
     @Autowired
     private RuleRepository ruleRepository;
+
+    @Autowired
+    private LogEntryService logEntryService;
+
+    @Autowired
+    private RestTemplateConfiguration restTemplateConfiguration;
 
     public void dummy(){
         //Device device;
@@ -68,6 +83,32 @@ public class DeviceService {
         ksession.fireAllRules();
 
         System.out.println(device.getAlarm());
+
+        if(device.getAlarm() != Device.Alarm.NO) {
+            DeviceDTO devDTO = new DeviceDTO();
+            devDTO.setName(device.getName());
+            devDTO.setUseFunction(device.getUseFunction());
+            devDTO.setValue(device.getValue());
+            devDTO.setAlarm(device.getAlarm().toString());
+
+            restTemplateConfiguration.setToken("1234567");
+            RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
+
+            HttpEntity<DeviceDTO> loggerRequest = new HttpEntity<>(devDTO);
+
+            try {
+                ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
+                        "http://localhost:8085/logger/device/alarmed",
+                        HttpMethod.POST,
+                        loggerRequest,
+                        LogEntry.class);
+
+                logEntryService.insertLog(logEntry.getBody());
+            } catch (HttpClientErrorException exception) {
+                exception.printStackTrace();
+                //throw new InvalidAPIResponse("Invalid API response.");
+            }
+        }
     }
 
     private KieSession createKieSessionFromDRL(String drl){
