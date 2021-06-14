@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../model/user';
+import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'app-all-users',
@@ -15,7 +16,8 @@ export class AllUsersComponent implements OnInit {
   closeResult = '';
   revReason: string;
 
-  users: User[];
+  admins: User[];
+  doctors: User[];
   username: String;
   password: String;
   email: String;
@@ -23,7 +25,8 @@ export class AllUsersComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private usersService: UsersService
   ) {
     this.username = "";
     this.password = "";
@@ -51,12 +54,36 @@ export class AllUsersComponent implements OnInit {
     }
   }
 
-  remove(id): void{
-    this.toastr.info("Should delete user", "Info");
+  removeDoctor(id): void{
+    this.usersService.deleteDoctor(id).subscribe(res => {
+      console.log(res);
+      this.ngOnInit();
+      this.toastr.success("Doctor successfully removed", "Success")
+    });
   }
 
-  changeRole(id): void{
-    this.toastr.info("Should change role", "Info");
+  changeDoctor(id): void{
+    this.usersService.changeToAdmin(id).subscribe(res => {
+      console.log(res);
+      this.ngOnInit();
+      this.toastr.success("Doctor successfully converted to admin role", "Success")
+    });
+  }
+
+  removeAdmin(id): void{
+    this.usersService.deleteAdmin(id).subscribe(res => {
+      console.log(res);
+      this.ngOnInit();
+      this.toastr.success("Admin successfully removed", "Success")
+    });
+  }
+
+  changeAdmin(id): void{
+    this.usersService.changeToDoctor(id).subscribe(res => {
+      console.log(res);
+      this.ngOnInit();
+      this.toastr.success("Admin successfully converted to doctor role", "Success")
+    });
   }
 
   addUser(): void{
@@ -77,11 +104,38 @@ export class AllUsersComponent implements OnInit {
     }
     else{
       this.modalService.dismissAll();
-      this.toastr.info("Should add user", "Info");
+      if (this.role == "ADMIN"){
+        this.usersService.addAdmin({
+          "username": this.username,
+          "password": this.password,
+          "email": this.password
+        }).subscribe(res => {
+          console.log(res);
+          this.toastr.success("New admin successfully added", "Success");
+          this.ngOnInit();
+        });
+      }
+      else{
+        this.usersService.addDoctor({
+          "username": this.username,
+          "password": this.password,
+          "email": this.password
+        }).subscribe(res => {
+          console.log(res);
+          this.toastr.success("New doctor successfully added", "Success");
+          this.ngOnInit();
+        });
+      }
     }
   }
 
   ngOnInit(): void {
+    this.usersService.getAllAdmins().subscribe(res => {
+      this.admins = res;
+    });
+    this.usersService.getAllDoctors().subscribe(res => {
+      this.doctors = res;
+    })
   }
 
 }

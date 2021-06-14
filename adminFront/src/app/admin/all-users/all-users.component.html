@@ -3,25 +3,43 @@
         <button class="main-btn">Back to main</button>
     </a>
     <h1>
-        All users
+        All admins
     </h1>
     <table border="2">
         <tr>
             <th>Id</th>
             <th>Username</th>
-            <th>Password</th>
-            <th>Role</th>
+            <th>Email</th>
             <th>Change role</th>
             <th>Delete</th>
         </tr>
         <tr style="height: 15px;"></tr>
-        <tr *ngFor="let user of users">
-            <td>{{user.id}}</td>
-            <td>{{user.username}}</td>
-            <td>{{user.password}}</td>
-            <td>{{user.role}}</td>
-            <td><button class="change-btn" (click)="changeRole(user.id)">CHANGE ROLE</button></td>
-            <td><button class="removal-btn" (click)="remove(user.id)">REMOVE</button></td>
+        <tr *ngFor="let admin of admins">
+            <td>{{admin.id}}</td>
+            <td>{{admin.username}}</td>
+            <td>{{admin.email}}</td>
+            <td><button class="change-btn" (click)="changeAdmin(admin.id)">CHANGE ROLE</button></td>
+            <td><button class="removal-btn" (click)="removeAdmin(admin.id)">REMOVE</button></td>
+        </tr>
+    </table>
+    <h1>
+        All doctors
+    </h1>
+    <table border="2">
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Change role</th>
+            <th>Delete</th>
+        </tr>
+        <tr style="height: 15px;"></tr>
+        <tr *ngFor="let doctor of doctors">
+            <td>{{doctor.id}}</td>
+            <td>{{doctor.username}}</td>
+            <td>{{doctor.email}}</td>
+            <td><button class="change-btn" (click)="changeDoctor(doctor.id)">CHANGE ROLE</button></td>
+            <td><button class="removal-btn" (click)="removeDoctor(doctor.id)">REMOVE</button></td>
         </tr>
     </table>
     <button class="add-btn" (click)="addUser()">ADD USER</button>

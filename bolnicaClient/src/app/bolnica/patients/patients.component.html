@@ -20,7 +20,7 @@
             <td>{{patient.firstName}}</td>
             <td>{{patient.lastName}}</td>
             <td>{{patient.email}}</td>
-            <td>{{patient.dateOfBirth}}</td>
+            <td>{{patient.dateOfBirth| date: 'dd/MM/yyyy hh:mm a'}}</td>
             <td><button class="view-btn" (click)="view(patient.id)">VIEW</button></td>
         </tr>
     </table>
