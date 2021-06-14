@@ -53,7 +53,7 @@ public class DoctorController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/doctoradd/ok",
+                        "https://localhost:8085/logger/crud/doctoradd/ok",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -68,7 +68,7 @@ public class DoctorController {
         } catch (Exception e) {
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/doctoradd/err",
+                        "https://localhost:8085/logger/crud/doctoradd/err",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -94,7 +94,7 @@ public class DoctorController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/doctordel/ok/" +id,
+                        "https://localhost:8085/logger/crud/doctordel/ok/" +id,
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -109,7 +109,7 @@ public class DoctorController {
         } catch (Exception e) {
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/doctordel/err/"+id,
+                        "https://localhost:8085/logger/crud/doctordel/err/"+id,
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);

@@ -109,7 +109,7 @@ public class AuthController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/auth/ok",
+                        "https://localhost:8085/logger/auth/ok",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -131,7 +131,7 @@ public class AuthController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/auth/err",
+                        "https://localhost:8085/logger/auth/err",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);

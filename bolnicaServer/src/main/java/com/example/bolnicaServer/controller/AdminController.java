@@ -55,7 +55,7 @@ public class AdminController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/adminadd/ok",
+                        "https://localhost:8085/logger/crud/adminadd/ok",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -72,7 +72,7 @@ public class AdminController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/adminadd/err",
+                        "https://localhost:8085/logger/crud/adminadd/err",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -97,7 +97,7 @@ public class AdminController {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/admindel/ok/"+id,
+                        "https://localhost:8085/logger/crud/admindel/ok/"+id,
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
@@ -113,7 +113,7 @@ public class AdminController {
             //System.out.println(e);
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/crud/admindel/err/"+id,
+                        "https://localhost:8085/logger/crud/admindel/err/"+id,
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
