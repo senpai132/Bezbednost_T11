@@ -1,0 +1,36 @@
+template header
+useFunction
+minAllowedValue
+maxAllowedValue
+minDeviceAlarm
+maxDeviceAlarm
+
+package devices;
+
+//import com.sample.Customer;
+import com.example.bolnicaServer.model.Device;
+
+template "device-rules"
+
+rule "Min value Device_@{row.rowNumber}"
+no-loop true
+when
+    $d: Device(value < @{minAllowedValue},
+    			useFunction == "@{useFunction}")
+then
+    System.out.println("Under value alarm");
+    modify ($d){ setAlarm(Device.Alarm.@{minDeviceAlarm})};
+end
+
+rule "Max value Device_@{row.rowNumber}"
+no-loop true
+when
+    $d: Device(value > @{maxAllowedValue},
+    			useFunction == "@{useFunction}")
+then
+    System.out.println("Over value alarm");
+    modify ($d){ setAlarm(Device.Alarm.@{maxDeviceAlarm})};
+end
+
+end template
+

@@ -1,6 +1,10 @@
 package com.dummydevice.dummy_device.service;
 
 import com.dummydevice.dummy_device.config.DeviceKeyStore;
+import com.dummydevice.dummy_device.config.RestTemplateConfiguration;
+import com.dummydevice.dummy_device.model.Authority;
+import com.dummydevice.dummy_device.model.User;
+import com.dummydevice.dummy_device.security.TokenUtils;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -33,7 +37,9 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class OCSPService {
@@ -45,12 +51,18 @@ public class OCSPService {
     private String ocspReqURL;
 
     @Autowired
-    private DeviceKeyStore deviceKeyStore;
+    private TokenUtils tokenUtils;
 
     @Autowired
+    private DeviceKeyStore deviceKeyStore;
+
+    /*@Autowired
     @Qualifier("NoOCSP")
     @Lazy
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate;*/
+
+    @Autowired
+    private RestTemplateConfiguration restTemplateConfiguration;
 
     public OCSPReq generateOCSPRequest(X509Certificate[] chain) throws Exception {
         KeyStore keyStore = deviceKeyStore.setUpStore();
@@ -84,6 +96,22 @@ public class OCSPService {
         return request;
     }
 
+
+    private String generateOCSPToken(){
+        String jwt = "";
+        User user = new User();
+        user.setId(0);
+        user.setUsername("OCSP");
+        Authority authority = new Authority();
+        authority.setId(0L);
+        authority.setName("ROLE_OCSP");
+        List<Authority> authoritys = new ArrayList<>();
+        authoritys.add(authority);
+        user.setAuthorities(authoritys);
+        jwt = tokenUtils.generateToken(user);
+        return "Bearer " + jwt;
+    }
+
     public OCSPResp sendOCSPRequest(OCSPReq ocspReq) throws Exception{
         HttpHeaders headers = new HttpHeaders();
 
@@ -92,6 +120,8 @@ public class OCSPService {
         ResponseEntity<byte[]> ocspResponse = null;
 
         try {
+            restTemplateConfiguration.setToken(generateOCSPToken());
+            RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();
             ocspResponse = restTemplate.exchange(ocspReqURL, HttpMethod.POST, entityReq, byte[].class);
         } catch (HttpClientErrorException e) {
             System.out.println("[ERROR] You are not allowed to make CSR request");

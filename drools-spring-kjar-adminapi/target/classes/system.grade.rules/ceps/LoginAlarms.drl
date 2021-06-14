@@ -1,0 +1,95 @@
+package loginAlarms
+
+//import java.lang.Exception;
+
+import adminapi.adminaplication.model.fact.BlockingFact;
+
+declare FailLoginEvent
+    @role(event)
+    @expires(25s)
+    ip: String
+end
+
+declare BlockIpEvent
+    @role(event)
+    @expires(25s)
+    ip: String
+end
+
+rule "Insert fail login event"
+    agenda-group "FailLog"
+	salience 10
+    when
+        $ip: String()
+        //not(BlockIpEvent(ip == $ip))
+    then
+        FailLoginEvent fail = new FailLoginEvent();
+        System.out.println("Dodajem");
+        fail.setIp($ip);
+        insert(fail);
+        //delete($u);
+end
+
+rule "Block user login"
+    agenda-group "FailLog"
+    salience 7
+    when
+        $ip: String()
+        $fl:FailLoginEvent(ip == $ip)
+        $num: Number(intValue > 2) from accumulate(
+            $fl2: FailLoginEvent(
+                this != $fl,
+                ip == $ip,
+                this meets[100s] $fl
+            ),
+            count($fl2)
+        )
+        not (BlockIpEvent(ip == $ip, this meets[25s] $fl))
+    then
+        System.out.println("Ulazim ovde alarm");
+        System.out.println($num);
+        BlockIpEvent alarm = new BlockIpEvent();
+        alarm.setIp($ip);
+        insert(alarm);
+end
+
+rule "Blocked user event"
+    agenda-group "Block"
+    no-loop
+	salience 10
+    when
+        $b: BlockingFact()
+        $ip: String()
+        BlockIpEvent(ip == $ip)
+    then
+        System.out.println("Usao block");
+        //$i = 1;
+        //throw new Exception("Blocked");
+        //System.out.println($i);
+        //update($i);
+        modify($b){setBlocked(true)}
+        //drools.halt();
+        //delete($b);
+end
+
+rule "Remove Fact"
+    agenda-group "Block"
+    no-loop
+	salience 3
+    when
+        $b: BlockingFact()
+    then
+        delete($b);
+end
+
+rule "Halt"
+    agenda-group "Halt"
+    no-loop
+	salience 10
+    when
+        $ip: String()
+    then
+        delete($ip);
+        System.out.println("Obrisao");
+        drools.halt();
+end

@@ -14,6 +14,7 @@
 	<name>adminaplication</name>
 	<description>Admin aplication</description>
 	<properties>
+		<drools.version>6.5.0.Final</drools.version>
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
@@ -85,7 +86,49 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 			<version>2.3.4.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-templates</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-api</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-core</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-compiler</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+			<version>${drools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>rs.sbnz</groupId>
+			<artifactId>drools-spring-kjar-adminapi</artifactId>
+			<type>jar</type>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.owasp.esapi</groupId>
+			<artifactId>esapi</artifactId>
+			<version>2.2.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.13.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -4,6 +4,9 @@
             <th><a routerLink="/add_certificate" routerLinkActive="active"><button>New certificate request</button></a></th>
             <th><button (click)="openReason()">Revoke certificate</button></th>
         </tr>
+        <tr *ngIf="!isAdmin">
+            <th><a routerLink="/patients" routerLinkActive="active"><button>All patients</button></a></th>
+        </tr>
         <tr style="height: 30px;"></tr>
         <tr>
             <th colspan="4"><button id="log-out-btn" (click)="logOut()">Log out</button></th>

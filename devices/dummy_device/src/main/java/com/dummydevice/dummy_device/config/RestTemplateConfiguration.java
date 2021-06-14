@@ -22,7 +22,13 @@ public class RestTemplateConfiguration {
 
     @Autowired
     private OCSPService ocspService;
-    @Bean(name = "NoOCSP")
+
+    private String token;
+
+    public void setToken(String token){
+        this.token = token;
+    }
+    //@Bean(name = "NoOCSP")
     public RestTemplate getRestTemplate(){
         RestTemplate restTemplate = new RestTemplate();
         HttpComponentsClientHttpRequestFactory requestFactory = null;
@@ -44,6 +50,7 @@ public class RestTemplateConfiguration {
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
 
+            restTemplate.getInterceptors().add(new RestInterceptor(token));
             restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e){
             e.printStackTrace();
@@ -64,7 +71,7 @@ public class RestTemplateConfiguration {
 
             SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
                     new SSLContextBuilder()
-                            .loadTrustMaterial(null, new OCSPTrustStrategy(trustStore, ocspService, true))
+                            .loadTrustMaterial(null, new OCSPTrustStrategy(trustStore, ocspService))
                             .loadKeyMaterial(keyStore.setUpStore(), keyStore.getTRUSTSTORE_PASSWORD().toCharArray()).build(),
                     NoopHostnameVerifier.INSTANCE
             );
@@ -76,6 +83,7 @@ public class RestTemplateConfiguration {
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
 
+            restTemplate.getInterceptors().add(new RestInterceptor(token));
             restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e){
             e.printStackTrace();
