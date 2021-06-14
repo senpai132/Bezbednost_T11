@@ -15,7 +15,7 @@ public class CRUDAdminLoggerController {
     @PostMapping("/adminadd/err")
     public LogEntryDTO adminError(@RequestBody AdminDTO dto) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
-        logEntryDTO.setType("CRUD_DOC");
+        logEntryDTO.setType("CRUD_ADMIN");
         logEntryDTO.setCode("ERR");
         logEntryDTO.setMessage("Admin with email: " + dto.getEmail() + " is unsuccessfully added.");
         logEntryDTO.setOccurrenceDate(new Date());
@@ -27,7 +27,7 @@ public class CRUDAdminLoggerController {
     @PostMapping("/adminadd/ok")
     public LogEntryDTO adminAddOk(@RequestBody AdminDTO dto) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
-        logEntryDTO.setType("CRUD_DOC");
+        logEntryDTO.setType("CRUD_ADMIN");
         logEntryDTO.setCode("OK");
         logEntryDTO.setMessage("Admin with email: " + dto.getEmail() + " is successfully added.");
         logEntryDTO.setOccurrenceDate(new Date());
@@ -39,7 +39,7 @@ public class CRUDAdminLoggerController {
     @PostMapping("/adminput/err")
     public LogEntryDTO adminUpdateError(@RequestBody AdminDTO dto) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
-        logEntryDTO.setType("CRUD_DOC");
+        logEntryDTO.setType("CRUD_ADMIN");
         logEntryDTO.setCode("ERR");
         logEntryDTO.setMessage("Admin with email: " + dto.getEmail() + " is unsuccessfully updated.");
         logEntryDTO.setOccurrenceDate(new Date());
@@ -51,7 +51,7 @@ public class CRUDAdminLoggerController {
     @PostMapping("/adminput/ok")
     public LogEntryDTO adminUpdateOk(@RequestBody AdminDTO dto) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
-        logEntryDTO.setType("CRUD_DOC");
+        logEntryDTO.setType("CRUD_ADMIN");
         logEntryDTO.setCode("OK");
         logEntryDTO.setMessage("Admin with email: " + dto.getEmail() + " is successfully updated.");
         logEntryDTO.setOccurrenceDate(new Date());
@@ -60,24 +60,24 @@ public class CRUDAdminLoggerController {
         return logEntryDTO;
     }
 
-    @PostMapping("/admindel/err")
-    public LogEntryDTO adminDeleteError(@RequestBody AdminDTO dto) {
+    @PostMapping("/admindel/err/{id}")
+    public LogEntryDTO adminDeleteError(@PathVariable int id) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
-        logEntryDTO.setType("CRUD_DOC");
+        logEntryDTO.setType("CRUD_ADMIN");
         logEntryDTO.setCode("ERR");
-        logEntryDTO.setMessage("Admin with email: " + dto.getEmail() + " is unsuccessfully deleted.");
+        logEntryDTO.setMessage("Failed to delete admin with id: " + id + ".");
         logEntryDTO.setOccurrenceDate(new Date());
         logEntryDTO.setOccurrenceTime(LocalTime.now());
 
         return logEntryDTO;
     }
 
-    @PostMapping("/admindel/ok")
-    public LogEntryDTO adminDeleteOk(@RequestBody AdminDTO dto) {
+    @PostMapping("/admindel/ok/{id}")
+    public LogEntryDTO adminDeleteOk(@PathVariable int id) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
-        logEntryDTO.setType("CRUD_DOC");
+        logEntryDTO.setType("CRUD_ADMIN");
         logEntryDTO.setCode("OK");
-        logEntryDTO.setMessage("Admin with email: " + dto.getEmail() + " is successfully deleted.");
+        logEntryDTO.setMessage("Admin with id: " + id + " is successfully deleted.");
         logEntryDTO.setOccurrenceDate(new Date());
         logEntryDTO.setOccurrenceTime(LocalTime.now());
 

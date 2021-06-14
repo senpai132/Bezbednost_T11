@@ -82,6 +82,9 @@ public class AuthController {
 
         KieSession session = sessionConfig.userLoginSession();
         String ip = getClientIpAddr(request);
+        restTemplateConfiguration.setToken("1234567");
+        RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
+        HttpEntity<UserLoginDTO> loggerRequest = new HttpEntity<>(authenticationRequest);
         //String realIp = ip;
         try {
             BlockingFact blockingFact = new BlockingFact();
@@ -104,6 +107,19 @@ public class AuthController {
             String jwt = tokenUtils.generateToken(user);
             int expiresIn = tokenUtils.getExpiredIn();
 
+            try {
+                ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
+                        "http://localhost:8085/logger/auth/ok",
+                        HttpMethod.POST,
+                        loggerRequest,
+                        LogEntry.class);
+
+                logEntryService.insertLog(logEntry.getBody());
+            } catch (HttpClientErrorException exception) {
+                exception.printStackTrace();
+                //throw new InvalidAPIResponse("Invalid API response.");
+            }
+
             return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn));
         } catch (Exception ex) {
 
@@ -112,10 +128,6 @@ public class AuthController {
 
             session.getAgenda().getAgendaGroup("FailLog").setFocus();
             session.fireUntilHalt();
-            restTemplateConfiguration.setToken("1234567");
-            RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
-
-            HttpEntity<UserLoginDTO> loggerRequest = new HttpEntity<>(authenticationRequest);
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(

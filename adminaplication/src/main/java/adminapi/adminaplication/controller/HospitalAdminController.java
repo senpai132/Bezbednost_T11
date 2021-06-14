@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/hospitaladmin")
+@RequestMapping("/c")
 public class HospitalAdminController {
     @Autowired
     private RestTemplateConfiguration restTemplateConfiguration;

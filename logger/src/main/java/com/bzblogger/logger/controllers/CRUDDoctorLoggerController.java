@@ -60,24 +60,24 @@ public class CRUDDoctorLoggerController {
         return logEntryDTO;
     }
 
-    @PostMapping("/doctordel/err")
-    public LogEntryDTO doctorDeleteError(@RequestBody DoctorDTO dto) {
+    @PostMapping("/doctordel/err/{id}")
+    public LogEntryDTO doctorDeleteError(@PathVariable int id) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
         logEntryDTO.setType("CRUD_DOC");
         logEntryDTO.setCode("ERR");
-        logEntryDTO.setMessage("Doctor with email: " + dto.getEmail() + " is unsuccessfully deleted.");
+        logEntryDTO.setMessage("Doctor with email: " + id + " is unsuccessfully deleted.");
         logEntryDTO.setOccurrenceDate(new Date());
         logEntryDTO.setOccurrenceTime(LocalTime.now());
 
         return logEntryDTO;
     }
 
-    @PostMapping("/doctordel/ok")
-    public LogEntryDTO doctorDeleteOk(@RequestBody DoctorDTO dto) {
+    @PostMapping("/doctordel/ok/{id}")
+    public LogEntryDTO doctorDeleteOk(@PathVariable int id) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
         logEntryDTO.setType("CRUD_DOC");
         logEntryDTO.setCode("OK");
-        logEntryDTO.setMessage("Doctor with email: " + dto.getEmail() + " is successfully deleted.");
+        logEntryDTO.setMessage("Doctor with email: " + id + " is successfully deleted.");
         logEntryDTO.setOccurrenceDate(new Date());
         logEntryDTO.setOccurrenceTime(LocalTime.now());
 

@@ -1,6 +1,7 @@
 package com.example.bolnicaServer.controller;
 
 import com.example.bolnicaServer.dto.request.AdminDTO;
+import com.example.bolnicaServer.dto.request.LogReportDTO;
 import com.example.bolnicaServer.model.Admin;
 import com.example.bolnicaServer.model.LogEntry;
 import com.example.bolnicaServer.service.LogEntryService;
@@ -43,6 +44,13 @@ public class LogEntryController {
     @GetMapping(value="date/{date}")
     public ResponseEntity<List<LogEntry>> getLogsByType(@PathVariable Date date) {
         List<LogEntry> logs = logEntryService.getByDate(date);
+
+        return new ResponseEntity<>(logs, HttpStatus.OK);
+    }
+
+    @GetMapping(value="dateinterval")
+    public ResponseEntity<List<LogEntry>> getLogsByType(@RequestBody LogReportDTO dto) {
+        List<LogEntry> logs = logEntryService.getForAPeriod(dto);
 
         return new ResponseEntity<>(logs, HttpStatus.OK);
     }

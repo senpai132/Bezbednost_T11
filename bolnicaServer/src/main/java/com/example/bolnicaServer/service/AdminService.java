@@ -1,8 +1,10 @@
 package com.example.bolnicaServer.service;
 
+import com.example.bolnicaServer.config.RestTemplateConfiguration;
 import com.example.bolnicaServer.dto.request.AdminDTO;
 import com.example.bolnicaServer.model.Admin;
 import com.example.bolnicaServer.repository.AdminRepository;
+import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
