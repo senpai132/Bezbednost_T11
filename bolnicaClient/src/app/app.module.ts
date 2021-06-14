@@ -13,13 +13,15 @@ import { CertificateService } from './bolnica/services/certificate.service';
 import { TokenInterceptorService } from './bolnica/services/token-interceptor.service';
 import { MainPageComponent } from './bolnica/main-page/main-page.component';
 import { ToastrModule } from 'ngx-toastr';
+import { PatientsComponent } from './bolnica/patients/patients.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddCertificateComponent,
     LoginComponent,
-    MainPageComponent
+    MainPageComponent,
+    PatientsComponent
   ],
   imports: [
     BrowserModule,

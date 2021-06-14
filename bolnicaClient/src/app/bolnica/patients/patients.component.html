@@ -1,0 +1,27 @@
+<div id="all_patients">
+    <a routerLink="/main" routerLinkActive="active">
+        <button class="main-btn">Back to main</button>
+    </a>
+    <h1>
+        All patients
+    </h1>
+    <table border="2">
+        <tr>
+            <th>Id</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th>Date of birth</th>
+            <th>Details</th>
+        </tr>
+        <tr style="height: 15px;"></tr>
+        <tr *ngFor="let patient of patients">
+            <td>{{patient.id}}</td>
+            <td>{{patient.firstName}}</td>
+            <td>{{patient.lastName}}</td>
+            <td>{{patient.email}}</td>
+            <td>{{patient.dateOfBirth}}</td>
+            <td><button class="view-btn" (click)="view(patient.id)">VIEW</button></td>
+        </tr>
+    </table>
+</div>
