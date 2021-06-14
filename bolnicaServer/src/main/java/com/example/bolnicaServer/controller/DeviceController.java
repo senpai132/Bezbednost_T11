@@ -29,7 +29,7 @@ public class DeviceController {
         device.setValue(dto.getValue());
         device.setAlarm(Device.Alarm.NO);
 
-        deviceService.deviceMessage(device);
+        deviceService.deviceMessage(device, dto.getPatientId());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

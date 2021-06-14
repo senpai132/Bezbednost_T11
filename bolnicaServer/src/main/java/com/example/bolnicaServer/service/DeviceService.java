@@ -6,7 +6,11 @@ import com.example.bolnicaServer.dto.request.DeviceDTO;
 import com.example.bolnicaServer.dto.request.UserLoginDTO;
 import com.example.bolnicaServer.model.Device;
 import com.example.bolnicaServer.model.LogEntry;
+import com.example.bolnicaServer.model.Patient;
+import com.example.bolnicaServer.model.PatientMessage;
 import com.example.bolnicaServer.model.template.RuleTemplate;
+import com.example.bolnicaServer.repository.PatientMessageRepository;
+import com.example.bolnicaServer.repository.PatientRepository;
 import com.example.bolnicaServer.repository.RuleRepository;
 import org.drools.template.ObjectDataCompiler;
 import org.kie.api.builder.Message;
@@ -37,6 +41,11 @@ public class DeviceService {
 
     @Autowired
     private RestTemplateConfiguration restTemplateConfiguration;
+
+    @Autowired
+    private PatientMessageRepository patientMessageRepository;
+    @Autowired
+    private PatientRepository patientRepository;
 
     public void dummy(){
         //Device device;
@@ -69,7 +78,7 @@ public class DeviceService {
 
     }
 
-    public void deviceMessage(Device device){
+    public void deviceMessage(Device device, int patientId){
         InputStream template = BolnicaServerApplication.class.getResourceAsStream("/device-template/DeviceAlarm.drt");
         List<RuleTemplate> data = ruleRepository.findAll();
 
@@ -83,6 +92,15 @@ public class DeviceService {
         ksession.fireAllRules();
 
         System.out.println(device.getAlarm());
+        Patient patient = patientRepository.findById(patientId);
+        if(patient != null) {
+            PatientMessage message = new PatientMessage();
+            message.setPatientId(patientId);
+            message.setMessage("Patient " + patient.getFirstName() + " " + patient.getLastName()
+                    + " reading from device " + device.getName()
+                    + " with use function " + device.getUseFunction() +" was " + device.getValue());
+            patientMessageRepository.save(message);
+        }
 
         if(device.getAlarm() != Device.Alarm.NO) {
             DeviceDTO devDTO = new DeviceDTO();
@@ -98,7 +116,7 @@ public class DeviceService {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/device/alarmed",
+                        "https://localhost:8085/logger/device/alarmed",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);

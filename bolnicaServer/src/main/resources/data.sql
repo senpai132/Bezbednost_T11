@@ -26,3 +26,8 @@ INSERT INTO patient (id, first_name, last_name, email_address, date_of_birth) VA
 
 INSERT INTO rule_template(id, use_function, min_allowed_value, max_allowed_value, min_device_alarm, max_device_alarm) VALUES
     (7001, 'Pritisak', 50, 200, 2, 1);
+
+INSERT INTO patient_message(id, message, patient_id) VALUES
+    (1, 'Patient reading from device N1K usage Pritisak was 100', 1021),
+    (2 , 'Patient reading from device N1K usage Pritisak was 165', 1022),
+    (3, 'Patient reading from device N1K usage Pritisak was 10', 1023);

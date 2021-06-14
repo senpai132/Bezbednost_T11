@@ -27,7 +27,8 @@ public class DeviceComponent {
             DeviceDTO dto = new DeviceDTO();
             dto.setName("device");
             dto.setValue(-110);
-            dto.setUseFunction("puls");
+            dto.setUseFunction("Pritisak");
+            dto.setPatientId(1021);
             HttpEntity<DeviceDTO> request = new HttpEntity<>(dto);
             HttpStatus httpStatus = restTemplate.exchange(
                     "https://localhost:8081/api/device",

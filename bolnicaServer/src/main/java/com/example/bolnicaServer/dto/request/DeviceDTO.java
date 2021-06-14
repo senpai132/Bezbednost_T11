@@ -7,13 +7,15 @@ public class DeviceDTO {
     private String useFunction;
     private int value;
     private String alarm;
+    private int patientId;
 
     public  DeviceDTO(){}
 
-    public DeviceDTO(String name, String useFunction, int value) {
+    public DeviceDTO(String name, String useFunction, int value, int patientId) {
         this.name = name;
         this.useFunction = useFunction;
         this.value = value;
+        this.patientId = patientId;
     }
 
     public String getName() {
@@ -46,5 +48,13 @@ public class DeviceDTO {
 
     public void setAlarm(String alarm) {
         this.alarm = alarm;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 }
