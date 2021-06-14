@@ -21,6 +21,8 @@ public class RuleTemplate {
     @Column(nullable = false)
     private Device.Alarm maxDeviceAlarm;
 
+    public RuleTemplate(){}
+
     public RuleTemplate(String useFunction, int minAllowedValue, int maxAllowedValue,
                         Device.Alarm minDeviceAlarm, Device.Alarm maxDeviceAlarm) {
         this.useFunction = useFunction;

@@ -3,12 +3,14 @@ package com.example.bolnicaServer.service;
 import com.example.bolnicaServer.BolnicaServerApplication;
 import com.example.bolnicaServer.model.Device;
 import com.example.bolnicaServer.model.template.RuleTemplate;
+import com.example.bolnicaServer.repository.RuleRepository;
 import org.drools.template.ObjectDataCompiler;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -18,6 +20,8 @@ import java.util.List;
 @Service
 public class DeviceService {
 
+    @Autowired
+    private RuleRepository ruleRepository;
 
     public void dummy(){
         //Device device;
@@ -48,6 +52,22 @@ public class DeviceService {
 
         System.out.println(device1.getAlarm());
 
+    }
+
+    public void deviceMessage(Device device){
+        InputStream template = BolnicaServerApplication.class.getResourceAsStream("/device-template/DeviceAlarm.drt");
+        List<RuleTemplate> data = ruleRepository.findAll();
+
+        ObjectDataCompiler converter = new ObjectDataCompiler();
+        String drl = converter.compile(data, template);
+
+        System.out.println(drl);
+
+        KieSession ksession = createKieSessionFromDRL(drl);
+        ksession.insert(device);
+        ksession.fireAllRules();
+
+        System.out.println(device.getAlarm());
     }
 
     private KieSession createKieSessionFromDRL(String drl){
