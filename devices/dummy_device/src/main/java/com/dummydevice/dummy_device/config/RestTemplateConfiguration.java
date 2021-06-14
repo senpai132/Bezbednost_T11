@@ -22,6 +22,12 @@ public class RestTemplateConfiguration {
 
     @Autowired
     private OCSPService ocspService;
+
+    private String token;
+
+    public void setToken(String token){
+        this.token = token;
+    }
     //@Bean(name = "NoOCSP")
     public RestTemplate getRestTemplate(){
         RestTemplate restTemplate = new RestTemplate();
@@ -44,6 +50,7 @@ public class RestTemplateConfiguration {
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
 
+            restTemplate.getInterceptors().add(new RestInterceptor(token));
             restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e){
             e.printStackTrace();
@@ -76,6 +83,7 @@ public class RestTemplateConfiguration {
             requestFactory.setReadTimeout(Integer.valueOf(1000000000));
             requestFactory.setConnectTimeout(Integer.valueOf(1000000000));
 
+            restTemplate.getInterceptors().add(new RestInterceptor(token));
             restTemplate.setRequestFactory(requestFactory);
         } catch (Exception e){
             e.printStackTrace();

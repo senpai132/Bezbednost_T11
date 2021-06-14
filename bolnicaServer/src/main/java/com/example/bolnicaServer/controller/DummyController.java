@@ -2,6 +2,7 @@ package com.example.bolnicaServer.controller;
 
 import com.example.bolnicaServer.config.RestTemplateConfiguration;
 //import com.example.bolnicaServer.model.Person;
+import com.example.bolnicaServer.service.DeviceService;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ import java.util.Map;
 @CrossOrigin
 @RequestMapping("/dummy")
 public class DummyController {
+
+    @Autowired
+    DeviceService deviceService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
@@ -51,6 +55,13 @@ public class DummyController {
             //throw new InvalidAPIResponse("Invalid API response.");
             return "Fail";
         }
+    }
+
+    @GetMapping("/template")
+    public String testTemplate()
+    {
+        deviceService.dummy();
+        return "Template works";
     }
 
     /*@PostMapping(value = "/person")
