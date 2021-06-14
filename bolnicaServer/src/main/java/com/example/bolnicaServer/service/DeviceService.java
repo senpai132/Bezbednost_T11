@@ -116,7 +116,7 @@ public class DeviceService {
 
             try {
                 ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
-                        "http://localhost:8085/logger/device/alarmed",
+                        "https://localhost:8085/logger/device/alarmed",
                         HttpMethod.POST,
                         loggerRequest,
                         LogEntry.class);
