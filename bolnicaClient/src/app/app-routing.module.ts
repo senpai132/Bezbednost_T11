@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AddCertificateComponent } from './bolnica/add-certificate/add-certificate.component';
 import { LoginComponent } from './bolnica/login/login.component';
 import { AllLogsComponent } from './bolnica/logs/all-logs/all-logs.component';
+import { CodeLogsComponent } from './bolnica/logs/code-logs/code-logs.component';
 import { TypeLogsComponent } from './bolnica/logs/type-logs/type-logs.component';
 import { MainPageComponent } from './bolnica/main-page/main-page.component';
 import { PatientsComponent } from './bolnica/patients/patients.component';
@@ -42,7 +43,14 @@ const routes: Routes = [{
   component: AllLogsComponent,
   canActivate: [RolesGuard],
   data: { expectedRoles: 'ROLE_ADMIN' }
-}];
+},
+{
+  path: 'code_logs',
+  component: CodeLogsComponent,
+  canActivate: [RolesGuard],
+  data: { expectedRoles: 'ROLE_ADMIN' }
+}
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

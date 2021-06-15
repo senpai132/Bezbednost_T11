@@ -16,6 +16,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { PatientsComponent } from './bolnica/patients/patients.component';
 import { TypeLogsComponent } from './bolnica/logs/type-logs/type-logs.component';
 import { AllLogsComponent } from './bolnica/logs/all-logs/all-logs.component';
+import { CodeLogsComponent } from './bolnica/logs/code-logs/code-logs.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AllLogsComponent } from './bolnica/logs/all-logs/all-logs.component';
     MainPageComponent,
     PatientsComponent,
     TypeLogsComponent,
-    AllLogsComponent
+    AllLogsComponent,
+    CodeLogsComponent
   ],
   imports: [
     BrowserModule,

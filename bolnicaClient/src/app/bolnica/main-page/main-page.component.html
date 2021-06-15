@@ -4,12 +4,14 @@
             <th *ngIf="isAdmin"><a routerLink="/add_certificate" routerLinkActive="active"><button>New certificate request</button></a></th>
             <th *ngIf="isAdmin"><button (click)="openReason()">Revoke certificate</button></th>
             <th *ngIf="isAdmin"><a routerLink="/all_logs" routerLinkActive="active"><button>All logs</button></a></th>
+            <th *ngIf="isAdmin"><a routerLink="/code_logs" routerLinkActive="active"><button>Error logs</button></a></th>
             <th *ngIf="!isAdmin"><a routerLink="/patients" routerLinkActive="active"><button>All patients</button></a></th>
+            <th *ngIf="!isAdmin"><a routerLink="/type_logs" routerLinkActive="active"><button>All device alarms</button></a></th>
             <th><button (click)="openRule()">Add rule</button></th>
         </tr>
         <tr style="height: 30px;"></tr>
         <tr>
-            <th colspan="4"><button id="log-out-btn" (click)="logOut()">Log out</button></th>
+            <th colspan="5"><button id="log-out-btn" (click)="logOut()">Log out</button></th>
         </tr>
     </table>
 </div>

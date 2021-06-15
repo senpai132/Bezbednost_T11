@@ -4,11 +4,11 @@ import { LogEntry } from '../../model/log-entry';
 import { LoggerService } from '../../services/logger.service';
 
 @Component({
-  selector: 'app-type-logs',
-  templateUrl: './type-logs.component.html',
-  styleUrls: ['./type-logs.component.sass']
+  selector: 'app-code-logs',
+  templateUrl: './code-logs.component.html',
+  styleUrls: ['./code-logs.component.sass']
 })
-export class TypeLogsComponent implements OnInit {
+export class CodeLogsComponent implements OnInit {
 
   logs: LogEntry[];
 
@@ -18,9 +18,10 @@ export class TypeLogsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loggerService.findByType("DEVICE_ALARM").subscribe(res => {
+    this.loggerService.findByCode("ERR").subscribe(res => {
       this.logs = res
     })
   }
+
 
 }
