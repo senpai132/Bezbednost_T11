@@ -8,6 +8,7 @@ import com.example.bolnicaServer.service.LogEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -21,6 +22,7 @@ public class LogEntryController {
     LogEntryService logEntryService;
 
     @GetMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('ALL_LOGS')")
     public ResponseEntity<List<LogEntry>> getAllLogs() {
         List<LogEntry> logs = logEntryService.getAll();
 
@@ -28,6 +30,7 @@ public class LogEntryController {
     }
 
     @GetMapping("code/{code}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     public ResponseEntity<List<LogEntry>> getLogsByCode(@PathVariable String code) {
         List<LogEntry> logs = logEntryService.getByCode(code);
 
@@ -35,6 +38,7 @@ public class LogEntryController {
     }
 
     @GetMapping(value="type/{type}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     public ResponseEntity<List<LogEntry>> getLogsByType(@PathVariable String type) {
         List<LogEntry> logs = logEntryService.getByType(type);
 
@@ -42,6 +46,7 @@ public class LogEntryController {
     }
 
     @GetMapping(value="date/{date}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     public ResponseEntity<List<LogEntry>> getLogsByType(@PathVariable Date date) {
         List<LogEntry> logs = logEntryService.getByDate(date);
 
@@ -49,6 +54,7 @@ public class LogEntryController {
     }
 
     @GetMapping(value="dateinterval")
+    @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('ALL_LOGS')")
     public ResponseEntity<List<LogEntry>> getLogsByType(@RequestBody LogReportDTO dto) {
         List<LogEntry> logs = logEntryService.getForAPeriod(dto);
 

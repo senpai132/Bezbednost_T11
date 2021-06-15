@@ -2,6 +2,12 @@ INSERT INTO authority (name) VALUES
     ('ROLE_ADMIN'),
     ('ROLE_DOCTOR');
 
+INSERT INTO privilege (name) VALUES
+    ('CREATE_RULE'),
+    ('CERT_REQ'),
+    ('ALL_LOGS'),
+    ('PATIENT_ACCESS');
+
 INSERT INTO admin (id, username, email_address, password) VALUES
     (1111, 'admin', 'admin@gmail.com', '$2a$04$5gn/3csNiz5C9S8E5SI.IO9gi8WF6AHofzUW0Ynk3.V2BzTu0sbGG');
 
@@ -11,6 +17,13 @@ INSERT INTO doctor (id, username, email_address, password) VALUES
 INSERT INTO user_authority (user_id, authority_id) VALUES
     (1111, 1),
     (1001, 2);
+
+INSERT INTO user_privilege (user_id, privilege_id) VALUES
+    (1111, 1),
+    (1111, 2),
+    (1111, 3),
+    (1001, 1),
+    (1001, 4);
 
 INSERT INTO patient (id, first_name, last_name, email_address, date_of_birth) VALUES
     (1021, 'Igor', 'Igoric', 'acanikolic021@gmail.com', '2000-12-08'),

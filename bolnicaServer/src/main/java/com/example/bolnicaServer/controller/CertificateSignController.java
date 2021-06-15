@@ -20,7 +20,7 @@ public class CertificateSignController {
     @Autowired
     private CertificateSignService certificateService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('CERT_REQ')")
     @RequestMapping(value = "/signingrequest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendSertificateRequest(@RequestHeader("Authorization") String token, @RequestBody CertificateSignRequestDTO csr) throws IOException, OperatorCreationException {
 

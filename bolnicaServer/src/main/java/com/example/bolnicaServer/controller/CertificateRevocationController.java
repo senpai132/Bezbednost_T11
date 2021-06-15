@@ -20,7 +20,7 @@ public class CertificateRevocationController {
     @Autowired
     private CertificateRevocationService certificateRevocationService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('CERT_REQ')")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> revokeCertificate(@RequestHeader("Authorization") String token, @RequestBody RevocationDTO dto) throws IOException, OperatorCreationException {
 

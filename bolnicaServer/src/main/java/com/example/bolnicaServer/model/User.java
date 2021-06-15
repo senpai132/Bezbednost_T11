@@ -1,13 +1,12 @@
 package com.example.bolnicaServer.model;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -35,12 +34,26 @@ public abstract class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private List<Authority> authorities;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_privilege",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
+    private Set<Privilege> privileges;
+
     public User() {}
 
     public User(String username, String password, String emailAddress) {
         this.username = username;
         this.password = password;
         this.emailAddress = emailAddress;
+    }
+
+    public Set<Privilege> getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(Set<Privilege> privileges) {
+        this.privileges = privileges;
     }
 
     public Integer getId() {
@@ -100,7 +113,14 @@ public abstract class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        List<GrantedAuthority> auths = new ArrayList<>();
+        for (Authority a : authorities)
+            auths.add(new SimpleGrantedAuthority(a.getName()));
+
+        for (Privilege privilege : privileges)
+            auths.add(new SimpleGrantedAuthority(privilege.getName()));
+
+        return auths;
     }
 
     @Override

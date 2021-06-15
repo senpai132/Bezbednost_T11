@@ -31,8 +31,9 @@ public class DummyController {
         return "Admin pristupa";
     }
 
-    @PreAuthorize("hasRole('ROLE_DOCTOR')")
+
     @GetMapping("/doktor")
+    @PreAuthorize("hasRole('ROLE_DOCTOR') && hasAuthority('CERT_REQ')")
     public String testDoctor() {
         return "Doktor pristupa";
     }

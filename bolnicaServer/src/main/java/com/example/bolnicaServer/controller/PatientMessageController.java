@@ -21,14 +21,14 @@ public class PatientMessageController {
     @Autowired
     private PatientMessageService patientMessageService;
 
-    @PreAuthorize("hasRole('ROLE_DOCTOR')")
+    @PreAuthorize("hasRole('ROLE_DOCTOR') && hasAuthority('PATIENT_ACCESS')")
     @GetMapping
     public ResponseEntity<List<PatientMessage>> getAllMessages() {
 
         return new ResponseEntity<>(patientMessageService.getAllMessages(), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_DOCTOR')")
+    @PreAuthorize("hasRole('ROLE_DOCTOR') && hasAuthority('PATIENT_ACCESS')")
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<PatientMessage>> getPatientMessages(@PathVariable int id) {
 
