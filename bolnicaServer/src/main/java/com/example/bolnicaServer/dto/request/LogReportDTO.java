@@ -1,9 +1,13 @@
 package com.example.bolnicaServer.dto.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class LogReportDTO {
+    @javax.validation.constraints.NotNull
     public Date startDate;
+    @NotNull
     public Date endDate;
 
     public LogReportDTO() {}

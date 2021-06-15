@@ -1,7 +1,10 @@
 package com.example.bolnicaServer.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class RevocationDTO {
     private String serialNumber;
+    @NotBlank(message = "Content can't be blank")
     private String revocationReason;
 
     public RevocationDTO(String serialNumber, String revocationReason) {

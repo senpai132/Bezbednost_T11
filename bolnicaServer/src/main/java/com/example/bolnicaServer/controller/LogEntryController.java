@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class LogEntryController {
 
     @PutMapping(value="dateinterval")
     @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('ALL_LOGS')")
-    public ResponseEntity<List<LogEntry>> getLogsByType(@RequestBody LogReportDTO dto) {
+    public ResponseEntity<List<LogEntry>> getLogsByType(@Valid @RequestBody LogReportDTO dto) {
         List<LogEntry> logs = logEntryService.getForAPeriod(dto);
 
         return new ResponseEntity<>(logs, HttpStatus.OK);
