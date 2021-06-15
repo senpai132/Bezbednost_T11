@@ -25,3 +25,34 @@
         </tr>
     </table>
 </div>
+
+<ng-template id="popup" #messages let-modal>
+    <div class="popup">
+        <div class="popup-inner">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">
+                    Patient id: {{patientId}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div *ngFor="let message of patientMessages" tabindex="0" class="e-card" id="basic">
+                    <div class="e-card-header">
+                        <div class="e-card-header-caption">
+                            <div class="e-card-title">Id: {{message.id}}</div>
+                        </div>
+                    </div>
+                    <div class="e-card-content">
+                        {{message.message}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">
+                        Close
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
