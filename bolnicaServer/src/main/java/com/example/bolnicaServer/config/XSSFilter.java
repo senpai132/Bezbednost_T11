@@ -1,6 +1,6 @@
 package com.example.bolnicaServer.config;
 
-import com.example.bolnicaServer.service.AlarmDosAttackService;
+import com.example.bolnicaServer.service.AlarmAttackService;
 import com.example.bolnicaServer.wrapper.XSSRequestWrapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +18,10 @@ import java.io.IOException;
 public class XSSFilter implements Filter {
 
     @Autowired
-    private AlarmDosAttackService service;
+    private AlarmAttackService service;
+
+    /*@Autowired
+    private RestTemplateConfiguration restTemplateConfiguration;*/
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -34,11 +37,11 @@ public class XSSFilter implements Filter {
 
         service.dosAlarm((HttpServletRequest) request);
 
-        XSSRequestWrapper wrappedRequest = new XSSRequestWrapper((HttpServletRequest) request);
+        XSSRequestWrapper wrappedRequest = new XSSRequestWrapper((HttpServletRequest) request, service);
 
         String body = IOUtils.toString(wrappedRequest.getReader());
         if (!StringUtils.isBlank(body)) {
-            body = XSSRequestWrapper.stripXSS(body);
+            body = XSSRequestWrapper.stripXSS(body, service);
             wrappedRequest.resetInputStream(body.getBytes());
         }
 

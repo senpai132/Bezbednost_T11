@@ -18,7 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
-public class AlarmDosAttackService {
+public class AlarmAttackService {
     @Autowired
     private LogEntryService logEntryService;
 
@@ -84,6 +84,35 @@ public class AlarmDosAttackService {
 
             throw new ServletException("Blocked");
         }
+
+
+    }
+
+    //TODO
+
+    public void xssAlarm() {
+        //String ip = request.getRequestURL().toString();
+
+        System.out.println("XSS ATACKKKKKKKKK");
+
+        restTemplateConfiguration.setToken("1234567");
+        RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
+
+        HttpEntity<String> loggerRequest = new HttpEntity<>("poruka");
+
+        try {
+            ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
+                    "https://localhost:8085/logger/attack/xss",
+                    HttpMethod.POST,
+                    loggerRequest,
+                    LogEntry.class);
+
+            logEntryService.insertLog(logEntry.getBody());
+        } catch (HttpClientErrorException exception) {
+            exception.printStackTrace();
+        }
+
+
 
     }
 }
