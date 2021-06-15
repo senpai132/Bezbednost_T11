@@ -53,7 +53,7 @@ public class DeviceComponent {
             int useInd = random.nextInt(2);
             int patientInd = random.nextInt(4);
             int[] values = {-110, 30, 50, 230};
-            String[] uses = {"Pritisak", "Pritisak"};
+            String[] uses = {"Pritisak", "novi"};
             int[] patients = {1021, 1022, 1023, 1024};
             //int value = Random
             //restTemplate.getForObject("https://localhost:8081/dummy/template", Void.class);
