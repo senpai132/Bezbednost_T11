@@ -15,7 +15,7 @@ public class DeviceComponent {
     @Autowired
     private RestTemplateConfiguration restTemplateConfiguration;
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 3000)
     public void deviceData() {
         System.out.println("Radi");
         restTemplateConfiguration.setToken("tokenjevisak");

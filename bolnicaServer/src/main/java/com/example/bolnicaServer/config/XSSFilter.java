@@ -1,8 +1,10 @@
 package com.example.bolnicaServer.config;
 
+import com.example.bolnicaServer.service.AlarmDosAttackService;
 import com.example.bolnicaServer.wrapper.XSSRequestWrapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,9 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class XSSFilter implements Filter {
 
+    @Autowired
+    private AlarmDosAttackService service;
+
     @Override
     public void init(FilterConfig filterConfig) {
     }
@@ -26,6 +31,8 @@ public class XSSFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+
+        service.dosAlarm((HttpServletRequest) request);
 
         XSSRequestWrapper wrappedRequest = new XSSRequestWrapper((HttpServletRequest) request);
 

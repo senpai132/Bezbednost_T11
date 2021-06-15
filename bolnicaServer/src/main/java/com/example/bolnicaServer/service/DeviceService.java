@@ -85,7 +85,7 @@ public class DeviceService {
         ObjectDataCompiler converter = new ObjectDataCompiler();
         String drl = converter.compile(data, template);
 
-        System.out.println(drl);
+        //System.out.println(drl);
 
         KieSession ksession = createKieSessionFromDRL(drl);
         ksession.insert(device);
@@ -124,7 +124,6 @@ public class DeviceService {
                 logEntryService.insertLog(logEntry.getBody());
             } catch (HttpClientErrorException exception) {
                 exception.printStackTrace();
-                //throw new InvalidAPIResponse("Invalid API response.");
             }
         }
     }
