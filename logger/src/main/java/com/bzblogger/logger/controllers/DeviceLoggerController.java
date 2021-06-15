@@ -17,7 +17,7 @@ public class DeviceLoggerController {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
         logEntryDTO.setType("DEVICE_ALARM");
         logEntryDTO.setCode(dto.getAlarm());
-        logEntryDTO.setMessage("Device with name: " + dto.getName() + "and use function " + dto.getUseFunction() + " fired the "
+        logEntryDTO.setMessage("Device with name: " + dto.getName() + " and use function " + dto.getUseFunction() + " fired the "
                 + dto.getAlarm() + " alarm. " + "Device value: " + dto.getValue());
         logEntryDTO.setOccurrenceDate(new Date());
         logEntryDTO.setOccurrenceTime(LocalTime.now());

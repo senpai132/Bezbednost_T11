@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class DeviceComponent {
@@ -47,13 +48,24 @@ public class DeviceComponent {
         RestTemplate restTemplate = restTemplateConfiguration.getOCSPRestTemplate();
 
         try {
-
+            Random random = new Random();
+            int valueInd = random.nextInt(4);
+            int useInd = random.nextInt(2);
+            int patientInd = random.nextInt(4);
+            int[] values = {-110, 30, 50, 230};
+            String[] uses = {"Pritisak", "Pritisak"};
+            int[] patients = {1021, 1022, 1023, 1024};
+            //int value = Random
             //restTemplate.getForObject("https://localhost:8081/dummy/template", Void.class);
             DeviceDTO dto = new DeviceDTO();
-            dto.setName("device");
-            dto.setValue(-110);
+            dto.setName("KNN1M");
+            /*dto.setValue(-110);
             dto.setUseFunction("Pritisak");
-            dto.setPatientId(1021);
+            dto.setPatientId(1021);*/
+            dto.setValue(values[valueInd]);
+            dto.setUseFunction(uses[useInd]);
+            dto.setPatientId(patients[patientInd]);
+
             HttpEntity<DeviceDTO> request = new HttpEntity<>(dto);
             HttpStatus httpStatus = restTemplate.exchange(
                     "https://localhost:8081/api/device",
