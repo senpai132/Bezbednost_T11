@@ -3,12 +3,14 @@ package com.example.bolnicaServer.service;
 import com.example.bolnicaServer.model.Authority;
 import com.example.bolnicaServer.repository.AuthorityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class AuthorityService {
     @Autowired
     private AuthorityRepository authorityRepository;

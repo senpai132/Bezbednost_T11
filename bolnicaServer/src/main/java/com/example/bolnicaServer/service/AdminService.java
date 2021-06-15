@@ -3,6 +3,7 @@ package com.example.bolnicaServer.service;
 import com.example.bolnicaServer.config.RestTemplateConfiguration;
 import com.example.bolnicaServer.dto.request.AdminDTO;
 import com.example.bolnicaServer.model.Admin;
+import com.example.bolnicaServer.model.Authority;
 import com.example.bolnicaServer.repository.AdminRepository;
 import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ import java.util.Map;
 public class AdminService {
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private AuthorityService authorityService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,6 +45,8 @@ public class AdminService {
         }
 
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        List<Authority> auth = authorityService.findByName("ROLE_ADMIN");
+        admin.setAuthorities(auth);
         adminRepository.save(admin);
 
         return admin;
