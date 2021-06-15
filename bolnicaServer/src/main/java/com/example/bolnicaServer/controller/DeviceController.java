@@ -19,7 +19,7 @@ public class DeviceController {
     @Autowired
     private DeviceService deviceService;
 
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PostMapping
     public ResponseEntity<?> saveDeviceMessage(@RequestBody DeviceDTO dto) {
 

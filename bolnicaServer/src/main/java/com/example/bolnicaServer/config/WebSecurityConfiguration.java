@@ -104,7 +104,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/dummy/device");
         web.ignoring().antMatchers("/dummy/template");
         //web.ignoring().antMatchers(HttpMethod.POST,"/dummy/person");
-        web.ignoring().antMatchers("/api/device");
+        //web.ignoring().antMatchers("/api/device");
 
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/refresh");

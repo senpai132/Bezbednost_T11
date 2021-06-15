@@ -2,6 +2,9 @@ package com.dummydevice.dummy_device.component;
 
 import com.dummydevice.dummy_device.config.RestTemplateConfiguration;
 import com.dummydevice.dummy_device.dto.DeviceDTO;
+import com.dummydevice.dummy_device.model.Authority;
+import com.dummydevice.dummy_device.model.User;
+import com.dummydevice.dummy_device.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -10,15 +13,37 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class DeviceComponent {
     @Autowired
     private RestTemplateConfiguration restTemplateConfiguration;
 
-    @Scheduled(fixedRate = 3000)
+    @Autowired
+    private TokenUtils tokenUtils;
+
+    private String generateDeviceToken(){
+        String jwt = "";
+        User user = new User();
+        user.setId(1);
+        user.setUsername("admin");
+        Authority authority = new Authority();
+        authority.setId(1L);
+        authority.setName("ROLE_ADMIN");
+        List<Authority> authoritys = new ArrayList<>();
+        authoritys.add(authority);
+        user.setAuthorities(authoritys);
+        jwt = tokenUtils.generateToken(user);
+        return "Bearer " + jwt;
+    }
+
+    @Scheduled(fixedRate = 10000)
     public void deviceData() {
         System.out.println("Radi");
-        restTemplateConfiguration.setToken("tokenjevisak");
+        restTemplateConfiguration.setToken(generateDeviceToken());
+        //restTemplateConfiguration.setToken("12345678");
         RestTemplate restTemplate = restTemplateConfiguration.getOCSPRestTemplate();
 
         try {
