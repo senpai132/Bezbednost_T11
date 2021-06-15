@@ -53,7 +53,7 @@ public class LogEntryController {
         return new ResponseEntity<>(logs, HttpStatus.OK);
     }
 
-    @GetMapping(value="dateinterval")
+    @PutMapping(value="dateinterval")
     @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('ALL_LOGS')")
     public ResponseEntity<List<LogEntry>> getLogsByType(@RequestBody LogReportDTO dto) {
         List<LogEntry> logs = logEntryService.getForAPeriod(dto);

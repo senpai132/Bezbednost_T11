@@ -5,6 +5,43 @@
     <h1>
         All logs
     </h1>
+    <table>
+        <tr>
+            <th>
+                Select by code:
+            </th>
+            <th colspan="2">
+                <select [value]="codeSearch" (input)="codeSearch = $event.target.value">
+                    <option>OVERVALUE</option>
+                    <option>UNDERVALUE</option>
+                    <option>MALFUNCTION</option>
+                    <option>ERR</option>
+                    <option>OK</option>
+                </select>
+            </th>
+            <th>
+                <button class="search-btn" (click)="searchCode()">Search</button>
+            </th>
+            <th rowspan="2">
+                <button (click)="ngOnInit()">Reset</button>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Select by dates:
+            </th>
+            <th>
+                <input type="datetime-local" [value]="startDate" (input)="startDate = $event.target.value">
+            </th>
+            <th>
+                <input type="datetime-local" [value]="endDate" (input)="endDate = $event.target.value">
+            </th>
+            <th>
+                <button class="search-btn" (click)="searchDates()">Search</button>
+            </th>
+        </tr>
+    </table>
+    <table style="height: 30px;"></table>
     <table border="2">
         <tr>
             <th>Id</th>

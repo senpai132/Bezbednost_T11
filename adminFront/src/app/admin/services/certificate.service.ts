@@ -6,6 +6,7 @@ import { Certificate } from '../model/certificate';
 import { CertificateRequest } from '../model/certificate-request';
 import { Revocation } from '../model/revocation';
 import { RevokedCertificate } from '../model/revoked-certificate';
+import { Template } from '../model/template';
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +38,8 @@ export class CertificateService {
     return this.http.get<CertificateRequest[]>(this.port + this.request, { headers: this.headers, responseType: 'json' });
   }
 
-  acceptRequest(id: number): Observable<any> {
-    return this.http.put<any>(this.port + this.request + this.acceptReq + id, { headers: this.headers, responseType: 'json' });
+  acceptRequest(id: number, template: Template): Observable<any> {
+    return this.http.put<any>(this.port + this.request + this.acceptReq + id, template, { headers: this.headers, responseType: 'json' });
   }
 
   declineRequest(id: number): Observable<any> {
