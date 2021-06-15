@@ -80,7 +80,7 @@ export class CertificateRequestsComponent implements OnInit {
     }
     else{
       this.modalService.dismissAll();
-      this.CertificateService.acceptRequest(this.acceptId).subscribe(res => {
+      this.CertificateService.acceptRequest(this.acceptId, {"type": val.acceptType}).subscribe(res => {
         this.toastr.info("Request accepted", "Info");
         this.router.navigateByUrl('/certificates');
       });
