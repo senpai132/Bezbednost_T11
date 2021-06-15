@@ -5,8 +5,10 @@ import com.example.bolnicaServer.dto.request.AdminDTO;
 import com.example.bolnicaServer.model.Admin;
 import com.example.bolnicaServer.model.Authority;
 import com.example.bolnicaServer.model.Doctor;
+import com.example.bolnicaServer.model.Privilege;
 import com.example.bolnicaServer.repository.AdminRepository;
 import com.example.bolnicaServer.repository.DoctorRepository;
+import com.example.bolnicaServer.repository.PrivilegeRepository;
 import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -15,9 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AdminService {
@@ -32,6 +32,9 @@ public class AdminService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PrivilegeRepository privilegeRepository;
 
     public Admin getAdminByUsername(String username) {
         return adminRepository.findByUsername(username);
@@ -96,6 +99,19 @@ public class AdminService {
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         List<Authority> auth = authorityService.findByName("ROLE_ADMIN");
         admin.setAuthorities(auth);
+
+        List<Privilege> pivs = privilegeRepository.findAll();
+
+        Set<Privilege> adminpivs = new HashSet<Privilege>();
+
+        for(Privilege p : pivs)
+        {
+            if(p.getName().equals("CREATE_RULE") || p.getName().equals("CERT_REQ") || p.getName().equals("ALL_LOGS"))
+                adminpivs.add(p);
+        }
+
+        admin.setPrivileges(adminpivs);
+
         adminRepository.save(admin);
 
         return admin;

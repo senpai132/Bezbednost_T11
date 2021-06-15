@@ -1,8 +1,10 @@
 package com.example.bolnicaServer.wrapper;
 
+import com.example.bolnicaServer.service.AlarmAttackService;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 import org.owasp.esapi.ESAPI;
 
@@ -21,11 +23,13 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     private byte[] rawData;
     private HttpServletRequest request;
     private ResettableServletInputStream servletStream;
+    private AlarmAttackService service;
 
-    public XSSRequestWrapper(HttpServletRequest request) {
+    public XSSRequestWrapper(HttpServletRequest request, AlarmAttackService service) {
         super(request);
         this.request = request;
         this.servletStream = new ResettableServletInputStream();
+        this.service = service;
     }
 
     public void resetInputStream(byte[] newRawData) {
@@ -85,7 +89,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
         int count = values.length;
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
-            encodedValues[i] = stripXSS(values[i]);
+            encodedValues[i] = stripXSS(values[i], service);
         }
         return encodedValues;
     }
@@ -93,13 +97,13 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String parameter) {
         String value = super.getParameter(parameter);
-        return stripXSS(value);
+        return stripXSS(value, service);
     }
 
     @Override
     public String getHeader(String name) {
         String value = super.getHeader(name);
-        return stripXSS(value);
+        return stripXSS(value, service);
     }
 
     @Override
@@ -110,20 +114,27 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
             String header = headers.nextElement();
             String[] tokens = header.split(",");
             for (String token : tokens) {
-                result.add(stripXSS(token));
+                result.add(stripXSS(token, service));
             }
         }
         return Collections.enumeration(result);
     }
 
-    public static String stripXSS(String value) {
+    public static String stripXSS(String value, AlarmAttackService service) {
         if (value == null) {
             return null;
         }
         value = ESAPI.encoder()
                 .canonicalize(value)
                 .replaceAll("\0", "");
-        return Jsoup.clean(value, Whitelist.none());
+
+        String cleanValue = Jsoup.clean(value, "",Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+
+        if(!cleanValue.equals(value)){
+            service.xssAlarm();
+        }
+
+        return cleanValue;//Jsoup.clean(value, Whitelist.none());
     }
 
 
