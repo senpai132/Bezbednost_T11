@@ -1,13 +1,10 @@
 <div id="all_routes">
     <table border="2">
-        <tr *ngIf="isAdmin">
-            <th><a routerLink="/add_certificate" routerLinkActive="active"><button>New certificate request</button></a></th>
-            <th><button (click)="openReason()">Revoke certificate</button></th>
-        </tr>
-        <tr *ngIf="!isAdmin">
-            <th><a routerLink="/patients" routerLinkActive="active"><button>All patients</button></a></th>
-        </tr>
         <tr>
+            <th *ngIf="isAdmin"><a routerLink="/add_certificate" routerLinkActive="active"><button>New certificate request</button></a></th>
+            <th *ngIf="isAdmin"><button (click)="openReason()">Revoke certificate</button></th>
+            <th *ngIf="isAdmin"><a routerLink="/all_logs" routerLinkActive="active"><button>All logs</button></a></th>
+            <th *ngIf="!isAdmin"><a routerLink="/patients" routerLinkActive="active"><button>All patients</button></a></th>
             <th><button (click)="openRule()">Add rule</button></th>
         </tr>
         <tr style="height: 30px;"></tr>
@@ -68,7 +65,7 @@
                             Mininmum value:
                         </label>
                         <div class="input-group">
-                            <input type="number" id="minVal" class="form-control" [value]="minVal" (input)="minVal = $event.target.value" />
+                            <input type="number" min="0" id="minVal" class="form-control" [value]="minVal" (input)="minVal = $event.target.value" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -76,7 +73,7 @@
                     Maximum value:
                 </label>
                         <div class="input-group">
-                            <input type="number" id="maxVal" class="form-control" [value]="maxVal" (input)="maxVal = $event.target.value" />
+                            <input type="number" min="0" id="maxVal" class="form-control" [value]="maxVal" (input)="maxVal = $event.target.value" />
                         </div>
                     </div>
                     <div class="form-group">

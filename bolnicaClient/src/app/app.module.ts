@@ -14,6 +14,8 @@ import { TokenInterceptorService } from './bolnica/services/token-interceptor.se
 import { MainPageComponent } from './bolnica/main-page/main-page.component';
 import { ToastrModule } from 'ngx-toastr';
 import { PatientsComponent } from './bolnica/patients/patients.component';
+import { TypeLogsComponent } from './bolnica/logs/type-logs/type-logs.component';
+import { AllLogsComponent } from './bolnica/logs/all-logs/all-logs.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { PatientsComponent } from './bolnica/patients/patients.component';
     AddCertificateComponent,
     LoginComponent,
     MainPageComponent,
-    PatientsComponent
+    PatientsComponent,
+    TypeLogsComponent,
+    AllLogsComponent
   ],
   imports: [
     BrowserModule,
