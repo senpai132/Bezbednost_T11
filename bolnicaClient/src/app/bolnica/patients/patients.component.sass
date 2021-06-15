@@ -28,3 +28,51 @@ div
         .view-btn
             @extends %button
             background-color: #0949fa
+
+.popup
+    display: block
+    background-color: #b3b3b3e7
+    position: absolute
+    top: 0px
+    bottom: 0px
+    left: 0px
+    right: 0px
+    z-index: 2
+
+    .popup-inner
+        border: 1px solid black
+        background-color: #25222273
+        margin-top: 3%
+        margin-left: 20%
+        margin-right: 20%
+        margin-bottom: 10%
+        width: 60%
+        height: 80%
+        z-index: 1
+
+        .modal-body
+            background-color: white    
+
+        .modal-footer
+            float: right
+            margin-top: 20px
+            margin-right: 10px
+
+            .btn-outline-dark
+                background-color: #3333ff
+                color: white
+                height: 35px
+
+            .close
+                background-color: #1a1a1a
+                color: white
+                height: 35px
+
+        .modal-header
+            opacity: 1
+            overflow: hidden
+            padding-top: 40px
+
+            .modal-title
+                text-align: center
+                font-size: 30px
