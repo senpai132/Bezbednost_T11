@@ -37,5 +37,6 @@ public class RoleChangeService {
 
         adminRepository.save(admin);
         doctorRepository.delete(doctor);
+        System.out.println("Doktor je postao admin");
     }
 }

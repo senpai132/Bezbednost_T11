@@ -9,7 +9,7 @@ import { User } from '../model/user';
 export class UsersService {
 
   private readonly port = "https://localhost:8080/";
-  private readonly admins = "hospitaladmin";
+  private readonly admins = "c";
   private readonly doctors = "hospitaldoctor";
   private readonly toDoctor = "/changetodoctor/";
   private readonly toAdmin = "/changetoadmin/";

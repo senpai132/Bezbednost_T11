@@ -7,6 +7,9 @@
         <tr *ngIf="!isAdmin">
             <th><a routerLink="/patients" routerLinkActive="active"><button>All patients</button></a></th>
         </tr>
+        <tr>
+            <th><button (click)="openRule()">Add rule</button></th>
+        </tr>
         <tr style="height: 30px;"></tr>
         <tr>
             <th colspan="4"><button id="log-out-btn" (click)="logOut()">Log out</button></th>
@@ -39,6 +42,56 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-dark" (click)="save()">
                     Save
+                </button>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">
+                        Cancel
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template id="popup" #rule let-modal>
+    <div class="popup">
+        <div class="popup-inner">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">
+                    New rule
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="minVal">
+                            Mininmum value:
+                        </label>
+                        <div class="input-group">
+                            <input type="number" id="minVal" class="form-control" [value]="minVal" (input)="minVal = $event.target.value" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxVal">
+                    Maximum value:
+                </label>
+                        <div class="input-group">
+                            <input type="number" id="maxVal" class="form-control" [value]="maxVal" (input)="maxVal = $event.target.value" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="useFunc">
+                    Use function:
+                </label>
+                        <div class="input-group">
+                            <input id="useFunc" class="form-control" [value]="useFunc" (input)="useFunc = $event.target.value" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="addRule()">
+                    Add
                 </button>
                 <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
                     <span aria-hidden="true">
