@@ -1,13 +1,16 @@
 package com.example.bolnicaServer.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class RuleDTO {
     private int minValue;
     private int maxValue;
+    @NotBlank(message = "Content can't be blank")
     private String useFunction;
 
     public RuleDTO(){}
 
-    public RuleDTO(int minValue, int maxValue, String useFunction) {
+    public RuleDTO(int minValue, int maxValue, @NotBlank(message = "Content can't be blank") String useFunction) {
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.useFunction = useFunction;

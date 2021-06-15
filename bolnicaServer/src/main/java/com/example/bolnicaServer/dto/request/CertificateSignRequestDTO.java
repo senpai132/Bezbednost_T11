@@ -1,14 +1,26 @@
 package com.example.bolnicaServer.dto.request;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class CertificateSignRequestDTO {
     private Long id;
+    @NotBlank(message = "Content can't be blank")
     private String commonName;
+    @NotBlank(message = "Content can't be blank")
     private String lastName;
+    @NotBlank(message = "Content can't be blank")
     private String firstName;
+    @NotBlank(message = "Content can't be blank")
     private String organization;
+    @NotBlank(message = "Content can't be blank")
     private String organizationUnit;
+    @NotBlank(message = "Content can't be blank")
     private String country;
+    @Email(message = "Email is not valid", regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+    @NotBlank(message = "Content can't be blank")
     private String email;
+    @NotBlank(message = "Content can't be blank")
     private String locality;
     private String serialNumber;
 

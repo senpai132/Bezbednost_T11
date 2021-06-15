@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
@@ -22,7 +23,7 @@ public class CertificateRevocationController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') && hasAuthority('CERT_REQ')")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> revokeCertificate(@RequestHeader("Authorization") String token, @RequestBody RevocationDTO dto) throws IOException, OperatorCreationException {
+    public ResponseEntity<?> revokeCertificate(@RequestHeader("Authorization") String token, @Valid @RequestBody RevocationDTO dto) throws IOException, OperatorCreationException {
 
         try {
             certificateRevocationService.revoke(dto, token);
