@@ -4,7 +4,9 @@ import com.example.bolnicaServer.config.RestTemplateConfiguration;
 import com.example.bolnicaServer.dto.request.AdminDTO;
 import com.example.bolnicaServer.model.Admin;
 import com.example.bolnicaServer.model.Authority;
+import com.example.bolnicaServer.model.Doctor;
 import com.example.bolnicaServer.repository.AdminRepository;
+import com.example.bolnicaServer.repository.DoctorRepository;
 import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -24,6 +26,9 @@ public class AdminService {
     private AuthorityService authorityService;
 
     @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public Admin getAdminByUsername(String username) {
@@ -39,11 +44,25 @@ public class AdminService {
 
     public Admin createAdmin(Admin admin) throws Exception{
 
+        Doctor user = doctorRepository.findByEmailAddress(admin.getEmailAddress());
+        if(user != null){
+            throw new Exception("User with given email already exists");
+        }
+
+        user = doctorRepository.findByUsername(admin.getUsername());
+        if(user != null){
+            throw new Exception("User with given username already exists");
+        }
+
         Admin adminExisting = adminRepository.findByEmailAddress(admin.getEmailAddress());
         if(adminExisting != null){
             throw new Exception("Admin with given email already exists");
         }
 
+        adminExisting = adminRepository.findByUsername(admin.getUsername());
+        if(adminExisting != null){
+            throw new Exception("Admin with given username already exists");
+        }
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         List<Authority> auth = authorityService.findByName("ROLE_ADMIN");
         admin.setAuthorities(auth);

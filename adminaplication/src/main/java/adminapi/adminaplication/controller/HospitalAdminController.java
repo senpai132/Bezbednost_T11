@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,23 +21,29 @@ public class HospitalAdminController {
     private RestTemplateConfiguration restTemplateConfiguration;
 
     @PostMapping
-    public void addAdmin(@RequestHeader("Authorization") String token, @RequestBody AdminDTO dto) {
+    public ResponseEntity<?> addAdmin(@RequestHeader("Authorization") String token, @RequestBody AdminDTO dto) {
         restTemplateConfiguration.setToken(token);
         RestTemplate restTemplate = restTemplateConfiguration.getRestTemplate();//new RestTemplate();
 
         HttpEntity<AdminDTO> request = new HttpEntity<>(dto);
         try {
-            HttpStatus httpStatus = restTemplate.exchange(
+            AdminDTO httpStatus = restTemplate.exchange(
                     "https://localhost:8081/api/admin",
                     HttpMethod.POST,
                     request,
-                    String.class).getStatusCode();
+                    AdminDTO.class).getBody();
 
+            if(httpStatus == null){
+                System.out.println("Los");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
 
         } catch (Exception exception) { //HttpClientErrorException
             //throw new InvalidAPIResponse("Invalid API response.");
             exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping

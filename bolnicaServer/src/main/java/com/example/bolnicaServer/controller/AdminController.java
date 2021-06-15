@@ -82,6 +82,7 @@ public class AdminController {
                 exception.printStackTrace();
                 //throw new InvalidAPIResponse("Invalid API response.");
             }
+            //throw new Exception(e.getMessage());
             return null;
         }
     }

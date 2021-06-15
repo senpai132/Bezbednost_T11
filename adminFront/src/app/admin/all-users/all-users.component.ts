@@ -108,7 +108,7 @@ export class AllUsersComponent implements OnInit {
         this.usersService.addAdmin({
           "username": this.username,
           "password": this.password,
-          "email": this.password
+          "email": this.email
         }).subscribe(res => {
           console.log(res);
           this.toastr.success("New admin successfully added", "Success");
@@ -119,7 +119,7 @@ export class AllUsersComponent implements OnInit {
         this.usersService.addDoctor({
           "username": this.username,
           "password": this.password,
-          "email": this.password
+          "email": this.email
         }).subscribe(res => {
           console.log(res);
           this.toastr.success("New doctor successfully added", "Success");
