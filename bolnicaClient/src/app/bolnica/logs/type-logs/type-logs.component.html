@@ -1,0 +1,27 @@
+<div id="all_logs">
+    <a routerLink="/main" routerLinkActive="active">
+        <button class="main-btn">Back to main</button>
+    </a>
+    <h1>
+        All device alarms
+    </h1>
+    <table border="2">
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Code</th>
+            <th>Message</th>
+            <th>Occurance date</th>
+            <th>Occurance time</th>
+        </tr>
+        <tr style="height: 15px;"></tr>
+        <tr *ngFor="let log of logs">
+            <td>{{log.id}}</td>
+            <td>{{log.type}}</td>
+            <td>{{log.code}}</td>
+            <td>{{log.message}}</td>
+            <td>{{log.occurrenceDate| date: 'dd/MM/yyyy hh:mm a'}}</td>
+            <td>{{log.occurrenceTime}}</td>
+        </tr>
+    </table>
+</div>

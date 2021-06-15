@@ -103,7 +103,6 @@ export class AllUsersComponent implements OnInit {
       this.toastr.error("Email not valid!", "Error");
     }
     else{
-      this.modalService.dismissAll();
       if (this.role == "ADMIN"){
         this.usersService.addAdmin({
           "username": this.username,
@@ -111,8 +110,12 @@ export class AllUsersComponent implements OnInit {
           "email": this.email
         }).subscribe(res => {
           console.log(res);
+          this.modalService.dismissAll();
           this.toastr.success("New admin successfully added", "Success");
           this.ngOnInit();
+        }, err => {
+          console.log(err);
+          this.toastr.error("Username or email already exists", "Error");
         });
       }
       else{
@@ -122,8 +125,12 @@ export class AllUsersComponent implements OnInit {
           "email": this.email
         }).subscribe(res => {
           console.log(res);
+          this.modalService.dismissAll();
           this.toastr.success("New doctor successfully added", "Success");
           this.ngOnInit();
+        }, err => {
+          console.log(err);
+          this.toastr.error("Username or email already exists", "Error");
         });
       }
     }
