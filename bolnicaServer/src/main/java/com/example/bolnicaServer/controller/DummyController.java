@@ -61,7 +61,7 @@ public class DummyController {
     @GetMapping("/template")
     public String testTemplate()
     {
-        deviceService.dummy();
+        //deviceService.dummy();
         return "Template works";
     }
 

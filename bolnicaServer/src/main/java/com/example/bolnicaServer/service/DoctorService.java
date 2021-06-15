@@ -3,8 +3,10 @@ package com.example.bolnicaServer.service;
 import com.example.bolnicaServer.model.Admin;
 import com.example.bolnicaServer.model.Authority;
 import com.example.bolnicaServer.model.Doctor;
+import com.example.bolnicaServer.model.Privilege;
 import com.example.bolnicaServer.repository.AdminRepository;
 import com.example.bolnicaServer.repository.DoctorRepository;
+import com.example.bolnicaServer.repository.PrivilegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DoctorService {
@@ -25,6 +29,9 @@ public class DoctorService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private PrivilegeRepository privilegeRepository;
 
     public Doctor getDoctorByUsername(String username) {
         return doctorRepository.findByUsername(username);
@@ -92,6 +99,19 @@ public class DoctorService {
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
         List<Authority> auth = authorityService.findByName("ROLE_DOCTOR");
         doctor.setAuthorities(auth);
+
+        List<Privilege> pivs = privilegeRepository.findAll();
+
+        Set<Privilege> docpivs = new HashSet<Privilege>();
+
+        for(Privilege p : pivs)
+        {
+            if(p.getName().equals("CREATE_RULE") || p.getName().equals("PATIENT_ACCESS"))
+                docpivs.add(p);
+        }
+
+        doctor.setPrivileges(docpivs);
+
         doctorRepository.save(doctor);
 
         return doctor;
