@@ -10,6 +10,8 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.List;
 
 @Service
@@ -55,6 +57,36 @@ public class DoctorService {
         doctorExisting = doctorRepository.findByUsername(doctor.getUsername());
         if(doctorExisting != null){
             throw new Exception("Doctor with given username already exists");
+        }
+
+        BufferedReader br = new BufferedReader(new FileReader("src/main/resources/invalid_passwords.txt"));
+        int i = 0;
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                /*sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();*/
+
+                //System.out.println(i);
+                //System.out.println(line);
+                if(doctor.getPassword().equals(line)){
+                    System.out.println("Losa sifra exception");
+                    break;
+                }
+                line = br.readLine();
+                i++;
+            }
+            String everything = sb.toString();
+        } finally {
+            br.close();
+        }
+
+        if(i < 10000){
+            System.out.println("Ulazim ovde");
+            throw new Exception("Losa sifra");
         }
 
         doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));

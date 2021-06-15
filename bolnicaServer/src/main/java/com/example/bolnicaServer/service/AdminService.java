@@ -13,6 +13,8 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,34 @@ public class AdminService {
         if(adminExisting != null){
             throw new Exception("Admin with given username already exists");
         }
+
+        BufferedReader br = new BufferedReader(new FileReader("src/main/resources/invalid_passwords.txt"));
+        int i = 0;
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                /*sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();*/
+                if(admin.getPassword().equals(line)){
+                    System.out.println("Losa sifra exception");
+                    break;
+                }
+                line = br.readLine();
+                i++;
+            }
+            String everything = sb.toString();
+        } finally {
+            br.close();
+        }
+
+        if(i < 10000){
+            System.out.println("Ulazim ovde");
+            throw new Exception("Losa sifra");
+        }
+
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         List<Authority> auth = authorityService.findByName("ROLE_ADMIN");
         admin.setAuthorities(auth);
