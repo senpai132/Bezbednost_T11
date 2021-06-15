@@ -40,7 +40,7 @@ public class AuthLoggerController {
     public LogEntryDTO loginBlocked(@RequestBody UserLoginDTO dto) {
         LogEntryDTO logEntryDTO = new LogEntryDTO();
         logEntryDTO.setType("AUTH");
-        logEntryDTO.setCode("BLOCKED");
+        logEntryDTO.setCode("ERR");
         logEntryDTO.setMessage("User with username: " + dto.getUsername() + " is blocked.");
         logEntryDTO.setOccurrenceDate(new Date());
         logEntryDTO.setOccurrenceTime(LocalTime.now());

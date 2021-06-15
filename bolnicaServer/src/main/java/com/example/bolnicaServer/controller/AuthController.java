@@ -95,6 +95,18 @@ public class AuthController {
             session.fireUntilHalt();
             if(blockingFact.isBlocked() ){
                 //#TODO blocked log
+                try {
+                    ResponseEntity<LogEntry> logEntry = restTemplate.exchange(
+                            "https://localhost:8085/logger/auth/blocked",
+                            HttpMethod.POST,
+                            loggerRequest,
+                            LogEntry.class);
+
+                    logEntryService.insertLog(logEntry.getBody());
+                } catch (HttpClientErrorException exception) {
+                    exception.printStackTrace();
+                    //throw new InvalidAPIResponse("Invalid API response.");
+                }
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             Authentication authentication = authenticationManager
